@@ -505,6 +505,22 @@
           <label for="f-eval-affiliation">Affiliation</label>
           <input type="text" id="f-eval-affiliation" placeholder="Institution or organisation">
         </div>
+        <div class="field-group span2">
+          <label for="f-eval-address">Address <span style="font-weight:400;color:var(--text-3)">(optional)</span></label>
+          <input type="text" id="f-eval-address" placeholder="Institution address">
+        </div>
+        <div class="field-group">
+          <label for="f-eval-education">Education <span style="font-weight:400;color:var(--text-3)">(subject and degree, optional)</span></label>
+          <input type="text" id="f-eval-education" placeholder="e.g. PhD Toxicology">
+        </div>
+        <div class="field-group">
+          <label for="f-eval-exp-tox">Experience in toxicology <span style="font-weight:400;color:var(--text-3)">(years, optional)</span></label>
+          <input type="number" id="f-eval-exp-tox" placeholder="e.g. 10" min="0" style="max-width:120px">
+        </div>
+        <div class="field-group span2">
+          <label for="f-eval-exp-eval">Experience evaluating toxicological studies / performing risk assessments <span style="font-weight:400;color:var(--text-3)">(years, optional)</span></label>
+          <input type="number" id="f-eval-exp-eval" placeholder="e.g. 5" min="0" style="max-width:120px">
+        </div>
       </div>
     </div>
 
@@ -584,7 +600,7 @@ const CRITERIA = {
         explain: 'The purity of the substance as used in the study should be stated. If a technical product was tested, this should be described.' },
       { n: 3, text: 'Is information on the source/origin of the substance given?', mandatory: false,
         explain: 'Name and address of the supplier or manufacturer of the test substance.' },
-      { n: 4, text: 'Is all information on the nature and/or physico-chemical properties of the test substance given that is necessary to characterise the study?', mandatory: false,
+      { n: 4, text: 'Is all information on the nature and/or physico-chemical properties of the test item given, which you deem indispensable for judging the data (see explanation for examples)?', mandatory: false,
         explain: 'This refers to properties relevant to the specific study type, e.g. vapour pressure for inhalation studies, solubility for aquatic studies, molecular weight for PBPK modelling.' },
     ]},
     { group: 'II', groupName: 'Test Organism Characterisation', items: [
@@ -592,39 +608,39 @@ const CRITERIA = {
         explain: 'The species and, for vertebrates, the common name should be stated.' },
       { n: 6, text: 'Is the sex of the test organism given?', mandatory: false,
         explain: 'Give 1 point if the sex is stated; give 1 point also for single-sex experiments where the sex is evident from the context.' },
-      { n: 7, text: 'Is information given on the strain of test animals plus, if considered necessary by the evaluator, on the supplier and colony conditions?', mandatory: false,
+      { n: 7, text: 'Is information given on the strain of test animals plus, if considered necessary to judge the study, other specifications (see explanation for examples)?', mandatory: false,
         explain: 'Strain is important for reproducibility. Supplier and housing conditions are considered necessary for repeated dose toxicity and reproductive toxicity studies.' },
       { n: 8, text: 'Is age or body weight of the test organisms at the start of the study given?', mandatory: false,
         explain: 'For studies where this information is critical for interpretation, e.g. developmental toxicity studies, age must be stated.' },
-      { n: 9, text: 'For repeated dose toxicity studies only (give point for other study types): Is information on the health status of test organisms given?', mandatory: false,
-        explain: 'For repeated dose toxicity studies, information on the health status (e.g. specific pathogen free, conventional) should be given. Score 1 automatically for other study types.' },
+      { n: 9, text: 'For repeated dose toxicity studies only (give point for other study types): Is information given on the housing or feeding conditions?', mandatory: false,
+        explain: 'For repeated dose toxicity studies, housing and feeding conditions (e.g. diet, light cycle, cage type) should be described. Score 1 automatically for other study types.' },
     ]},
     { group: 'III', groupName: 'Study Design Description', items: [
       { n: 10, text: 'Is the administration route given?', mandatory: true,
         explain: 'The route of administration (oral, dermal, inhalation, intravenous, etc.) must be clearly stated.' },
       { n: 11, text: 'Are doses administered or concentrations in application media given?', mandatory: true,
         explain: 'Doses (e.g. mg/kg bw/day) or concentrations must be given for all dose groups including controls.' },
-      { n: 12, text: 'Are frequency and duration of exposure as well as time-points of observations explicitly stated?', mandatory: true,
+      { n: 12, text: 'Are frequency and duration of exposure as well as time-points of observations explained?', mandatory: true,
         explain: 'E.g. once daily for 28 days; observations at 7, 14, 21 and 28 days. All relevant time data must be provided.' },
-      { n: 13, text: 'Were negative (where required) and positive controls (where required) included (give point also if not applicable)?', mandatory: true,
+      { n: 13, text: 'Were negative (where required) and positive controls (where required) included (give point also, when absent but not required, see explanations for study types and their respective requirements on controls)?', mandatory: true,
         explain: 'If controls are scientifically necessary, they must be included. Score 1 if controls are included or if they are genuinely not applicable.' },
-      { n: 14, text: 'Is the number of animals (in case of experimental human studies: number of test subjects) given for each dose group?', mandatory: true,
+      { n: 14, text: 'Is the number of animals (in case of experimental human studies: number of test persons) per group given?', mandatory: true,
         explain: 'Number per dose group must be reported at the start of the study. For studies with sex-specific endpoints, numbers per sex per group are required.' },
-      { n: 15, text: 'Are sufficient details of the administration scheme given to judge the study (see explanations for details)?', mandatory: false,
+      { n: 15, text: 'Are sufficient details of the administration scheme given to judge the study (see explanation for examples)?', mandatory: false,
         explain: 'For inhalation: concentration in air, particle size distribution. For dermal: percentage of body surface area, vehicle. For gavage: volume per kg bw. Details must allow independent replication.' },
-      { n: 16, text: 'For inhalation studies and repeated dose toxicity studies only (give point for other study types): Are housing and feeding conditions given?', mandatory: false,
-        explain: 'Housing conditions (temperature, humidity, light cycle, cage type) and feeding (diet type, food and water access) should be described for inhalation and subchronic/chronic studies.' },
+      { n: 16, text: 'For inhalation studies and repeated dose toxicity studies only (give point for other study types): Were achieved concentrations analytically verified or was stability of the test substance otherwise ensured or made plausible?', mandatory: false,
+        explain: 'For inhalation studies, analytical verification of target concentrations is required. For other study types, score 1 automatically.' },
     ]},
     { group: 'IV', groupName: 'Study Results Documentation', items: [
       { n: 17, text: 'Are the study endpoint(s) and their method(s) of determination clearly described?', mandatory: false,
         explain: 'All endpoints measured in the study (e.g. mortality, body weight, organ weights, histopathology) should be identified. The analytical or clinical methods used should be described.' },
-      { n: 18, text: 'Is the description of the study results for all endpoints investigated transparent and reproducible?', mandatory: false,
+      { n: 18, text: 'Is the description of the study results for all endpoints investigated transparent and complete?', mandatory: false,
         explain: 'Data should be presented in a way that allows independent evaluation. Means, standard deviations, individual animal data or summary statistics should be provided.' },
-      { n: 19, text: 'Are the statistical methods applied for data analysis given and applied in a transparent and appropriate manner?', mandatory: false,
+      { n: 19, text: 'Are the statistical methods applied for data analysis given and applied in a transparent manner (give also point, if not necessary/applicable, see explanations)?', mandatory: false,
         explain: 'Statistical tests used should be named. For studies with multiple comparisons, appropriate corrections should be noted. Non-parametric tests are expected for ordinal data.' },
     ]},
     { group: 'V', groupName: 'Plausibility of Study Design and Results', items: [
-      { n: 20, text: 'Is the study design chosen appropriate for obtaining the substance-specific data needed?', mandatory: true,
+      { n: 20, text: 'Is the study design chosen appropriate for obtaining the substance-specific data aimed at (see explanations for details)?', mandatory: true,
         explain: 'The study design (species, route, doses, duration) should be appropriate for addressing the intended question. Consider whether the design is capable of detecting the expected effects at the dose levels used.' },
       { n: 21, text: 'Are the quantitative study results reliable (see explanations for arguments)?', mandatory: false,
         explain: 'Consider: Are dose-response relationships plausible? Are results consistent with the biological mechanism? Are outliers explained? Are control values within historical norms? Reviewer judgement is required here.' },
@@ -638,7 +654,7 @@ const CRITERIA = {
         explain: 'Purity as used in the study. If a technical mixture was tested, composition should be described.' },
       { n: 3, text: 'Is information on the source/origin of the substance given?', mandatory: false,
         explain: 'Name and address of the supplier or manufacturer.' },
-      { n: 4, text: 'Is all information on the nature and/or physico-chemical properties of the test substance given that is necessary to characterise the study?', mandatory: false,
+      { n: 4, text: 'Is all information on the nature and/or physico-chemical properties of the test item given, which you deem indispensable for judging the data (see explanation for examples)?', mandatory: false,
         explain: 'For in vitro studies, stability in the test medium and solubility are particularly important. Potential for cytotoxicity at test concentrations should be addressed.' },
     ]},
     { group: 'II', groupName: 'Test System Characterisation', items: [
@@ -646,7 +662,7 @@ const CRITERIA = {
         explain: 'The biological system used (cell line, primary cells, tissue, organism) should be named and described.' },
       { n: 6, text: 'Is information given on the source/origin of the test system?', mandatory: false,
         explain: 'Source organism, tissue of origin, supplier (for cell lines), passage number, or derivation should be provided.' },
-      { n: 7, text: 'Are necessary information on test system properties, and on conditions of cultivation/maintenance given?', mandatory: false,
+      { n: 7, text: 'Are necessary information on test system properties, and on conditions of cultivation and maintenance given?', mandatory: false,
         explain: 'Culture medium, supplements (serum, growth factors), temperature, CO2 concentration, and any other relevant conditions should be described.' },
     ]},
     { group: 'III', groupName: 'Study Design Description', items: [
@@ -654,7 +670,7 @@ const CRITERIA = {
         explain: 'The method of adding the test substance (dissolved, suspended, in medium, with or without solvent) should be described. Solvent/vehicle and its concentration should be given.' },
       { n: 9, text: 'Are doses administered or concentrations in application media given?', mandatory: true,
         explain: 'Test concentrations in the culture medium (e.g. µM, µg/mL) must be reported for all tested concentrations.' },
-      { n: 10, text: 'Are frequency and duration of exposure as well as time-points of observations explicitly stated?', mandatory: true,
+      { n: 10, text: 'Are frequency and duration of exposure as well as time-points of observations explained?', mandatory: true,
         explain: 'Duration of treatment, time of observation/measurement, and any renewal of test medium must be described.' },
       { n: 11, text: 'Were negative controls included (give also point, if not necessary, see explanations)?', mandatory: true,
         explain: 'Untreated controls and/or solvent controls should be included unless justified. Score 1 if included or if scientifically not necessary (justify in comments).' },
@@ -666,13 +682,13 @@ const CRITERIA = {
     { group: 'IV', groupName: 'Study Results Documentation', items: [
       { n: 14, text: 'Are the study endpoint(s) and their method(s) of determination clearly described?', mandatory: false,
         explain: 'All endpoints (cell viability, enzyme activity, reporter gene expression, etc.) and the analytical/assay methods used should be clearly described.' },
-      { n: 15, text: 'Is the description of the study results for all endpoints investigated transparent and reproducible?', mandatory: false,
+      { n: 15, text: 'Is the description of the study results for all endpoints investigated transparent and complete?', mandatory: false,
         explain: 'Data should be presented numerically (mean ± SD or SEM). Concentration-response relationships should be visible. Outliers and their treatment should be described.' },
-      { n: 16, text: 'Are the statistical methods for data analysis given and applied in a transparent and appropriate manner?', mandatory: false,
+      { n: 16, text: 'Are the statistical methods for data analysis given and applied in a transparent manner (give also point, if not necessary/applicable, see explanations)?', mandatory: false,
         explain: 'Statistical tests used should be named. IC50 or other derived values should include confidence intervals or methods of calculation.' },
     ]},
     { group: 'V', groupName: 'Plausibility of Study Design and Data', items: [
-      { n: 17, text: 'Is the study design chosen appropriate for obtaining the substance-specific data needed?', mandatory: true,
+      { n: 17, text: 'Is the study design chosen appropriate for obtaining the substance-specific data aimed at (see explanations for details)?', mandatory: true,
         explain: 'The test system and method should be appropriate for the endpoint and substance of interest. Consider potential confounders: cytotoxicity, interference with assay detection system, or chemical instability.' },
       { n: 18, text: 'Are the quantitative study results reliable (see explanations for arguments)?', mandatory: false,
         explain: 'Consider: Are concentration-response relationships plausible? Are control values within expected ranges? Are results consistent between replicates? Is there evidence of cytotoxicity confounding the results?' },
@@ -737,7 +753,7 @@ function init() {
 }
 
 function restoreInfo(info) {
-  ['authors','title','source','eval-name','eval-date','eval-affiliation'].forEach(k => {
+  ['authors','title','source','eval-name','eval-date','eval-affiliation','eval-address','eval-education','eval-exp-tox','eval-exp-eval'].forEach(k => {
     const el = document.getElementById('f-' + k);
     if (el && info[k]) el.value = info[k];
   });
@@ -1110,6 +1126,10 @@ function getInfo() {
     'eval-name': document.getElementById('f-eval-name')?.value || '',
     'eval-date': document.getElementById('f-eval-date')?.value || '',
     'eval-affiliation': document.getElementById('f-eval-affiliation')?.value || '',
+    'eval-address': document.getElementById('f-eval-address')?.value || '',
+    'eval-education': document.getElementById('f-eval-education')?.value || '',
+    'eval-exp-tox': document.getElementById('f-eval-exp-tox')?.value || '',
+    'eval-exp-eval': document.getElementById('f-eval-exp-eval')?.value || '',
   };
 }
 
@@ -1166,12 +1186,27 @@ function exportExcel() {
   const raterData = [
     ['ToxRTool: a tool to assess the reliability of toxicological data'],
     [],
-    ['Optional information for feedback to ECVAM'],
+    ['Optional information for feed-back to ECVAM'],
     ['Date/period of evaluation:', info['eval-date'] || ''],
     [],
     ['Rater information'],
     ['Name', info['eval-name'] || ''],
+    ['Address', info['eval-address'] || ''],
     ['Affiliation', info['eval-affiliation'] || ''],
+    ['Education (subject and degree)', info['eval-education'] || ''],
+    ['Experience in toxicology (years)', info['eval-exp-tox'] || ''],
+    ['Experience in evaluating toxicological studies and/or performing risk assessments (years)', info['eval-exp-eval'] || ''],
+    [],
+    ['Please answer these questions after having performed the evaluation!'],
+    [],
+    ['In general, do you consider a tool for assessing the reliability of toxicological data useful?', ''],
+    ['Is the tool readily applicable and user-friendly?', ''],
+    ['Is the tool transparent?', ''],
+    ['How much time did you need (on average, or range) to read a case study and apply the tool?', ''],
+    ['Did the application of the tool influence/change your opinion on how to assess data quality?', ''],
+    ['Did you find it helpful to document observations on relevance of data?', ''],
+    ['Do you have specific comments on individual criteria?', ''],
+    ['Do you have other/general comments on the tool?', ''],
   ];
   const wsRater = XLSX.utils.aoa_to_sheet(raterData);
   wsRater['!cols'] = [{wch:40},{wch:40}];
@@ -1244,23 +1279,21 @@ function exportExcel() {
   rows.push(['D', 'Justification in case evaluator deviates from B:', justif]);
   rows.push([]);
 
-  // Optional section
-  if (currentStep === 3) {
-    const optPurpose   = document.getElementById('opt-purpose')?.value || '';
-    const optGuideline = document.getElementById('opt-guideline')?.value || '';
-    const optGExists   = document.getElementById('opt-guideline-exists')?.value || '';
-    const optDevs      = document.getElementById('opt-deviations')?.value || '';
-    const optRegObs    = document.getElementById('opt-reg-obs')?.value || '';
-    const optComments  = document.getElementById('opt-comments')?.value || '';
-    if (optPurpose || optGuideline || optGExists || optDevs || optRegObs || optComments) {
-      rows.push(['Optional documentation of observations relevant to regulatory use of data']);
-      rows.push(['Purpose of evaluation:', optPurpose]);
-      rows.push(['Conducted according to OECD/EU guidelines?', optGuideline]);
-      rows.push(['Guideline exists (if not a guideline study)?', optGExists]);
-      rows.push(['Relevant deviations from guideline(s):', optDevs]);
-      rows.push(['Observations relevant to regulatory use:', optRegObs]);
-      rows.push(['General comments on usability:', optComments]);
-    }
+  // Optional section (always export if any field is filled)
+  const optPurpose   = document.getElementById('opt-purpose')?.value || '';
+  const optGuideline = document.getElementById('opt-guideline')?.value || '';
+  const optGExists   = document.getElementById('opt-guideline-exists')?.value || '';
+  const optDevs      = document.getElementById('opt-deviations')?.value || '';
+  const optRegObs    = document.getElementById('opt-reg-obs')?.value || '';
+  const optComments  = document.getElementById('opt-comments')?.value || '';
+  if (optPurpose || optGuideline || optGExists || optDevs || optRegObs || optComments) {
+    rows.push(['Optional documentation of observations with importance to relevance (not part of the reliability assessment)']);
+    rows.push(['What is the purpose of this quality evaluation (data documentation for use under REACH, classification activity under GHS, ECVAM validation activities, other)?', optPurpose]);
+    rows.push(['Study conducted according to recent OECD or EU guidelines (or other, e.g. national guidelines)? If yes, which ones? Study conducted under GLP conditions?', optGuideline]);
+    rows.push(['(If not a guideline study): Does a guideline exist for the study endpoint(s) under investigation?', optGExists]);
+    rows.push(['Are you aware of relevant deviations from the guideline(s) in the study evaluated? If yes, which one?', optDevs]);
+    rows.push(['Did you make observations with importance to the regulatory use of the data?', optRegObs]);
+    rows.push(['Would you like to make other/general comments on the usability of the data?', optComments]);
   }
 
   const wsAssess = XLSX.utils.aoa_to_sheet(rows);
