@@ -3,11 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ToxRTool — Toxicological Data Reliability Assessment Tool</title>
-<meta name="description" content="Free browser-based ToxRTool for assessing the reliability of in vivo and in vitro toxicological studies. Implements the EU/JRC Klimisch scoring system — Categories 1–4. No registration, no backend.">
-<meta name="keywords" content="ToxRTool, toxicological data reliability, Klimisch score, in vivo assessment, in vitro assessment, EURL ECVAM, JRC, toxicology, study reliability, regulatory toxicology, chemical safety">
+<title>ToxRTool Web — Free Toxicological Study Reliability Assessment (Klimisch Score)</title>
+<meta name="description" content="Free online ToxRTool: assess the reliability of in vivo and in vitro toxicological studies using the EU/JRC Klimisch scoring system. Get Categories 1–4 instantly. No login, no backend.">
+<meta name="keywords" content="ToxRTool, toxicological data reliability, Klimisch score, Klimisch method, in vivo assessment, in vitro assessment, EURL ECVAM, JRC, toxicology study quality, regulatory toxicology, chemical safety, REACH, study reliability evaluation">
 <meta name="author" content="carlotta">
+<meta name="robots" content="index, follow">
 <link rel="canonical" href="https://carlottalupatelli.github.io/toxrtool/">
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
@@ -22,16 +25,29 @@
 <meta name="twitter:description" content="Free browser-based tool for assessing the reliability of toxicological studies using the EU/JRC ToxRTool methodology.">
 <meta name="twitter:image" content="https://carlottalupatelli.github.io/toxrtool/og-image.png">
 
-<!-- Structured Data -->
+<!-- Structured Data: WebApplication -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "ToxRTool Web",
   "url": "https://carlottalupatelli.github.io/toxrtool/",
-  "description": "Browser-based tool for assessing the reliability of in vivo and in vitro toxicological studies using the EU/JRC ToxRTool (Klimisch) methodology.",
+  "description": "Free browser-based tool for assessing the reliability of in vivo and in vitro toxicological studies using the EU/JRC ToxRTool (Klimisch) methodology. Produces Category 1–4 reliability scores with Excel export.",
   "applicationCategory": "ScienceApplication",
   "operatingSystem": "Any",
+  "browserRequirements": "Requires a modern web browser. No installation needed.",
+  "keywords": "ToxRTool, Klimisch score, toxicological reliability, in vivo, in vitro, EURL ECVAM, regulatory toxicology",
+  "datePublished": "2026-03-08",
+  "featureList": [
+    "In vivo assessment with 21 criteria and 8 mandatory criteria",
+    "In vitro assessment with 18 criteria and 6 mandatory criteria",
+    "Automatic Klimisch Category 1–4 scoring",
+    "Evaluator override with justification",
+    "Export to Excel (.xlsx) and PDF",
+    "Auto-save to browser localStorage",
+    "Shareable links via URL hash encoding",
+    "Zero backend — fully client-side"
+  ],
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -50,6 +66,64 @@
       "name": "EURL ECVAM, European Commission Joint Research Centre"
     }
   }
+}
+</script>
+
+<!-- Structured Data: FAQ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is ToxRTool?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ToxRTool (Toxicological data Reliability assessment Tool) is a standardised checklist developed by EURL ECVAM at the European Commission Joint Research Centre (JRC). It evaluates the inherent quality and reliability of in vivo and in vitro toxicological studies by scoring them across 18–21 criteria, producing a Category 1–4 reliability rating."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the Klimisch score?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Klimisch score (Klimisch et al., 1997) is a method for classifying the reliability of toxicological studies into four categories: Category 1 (Reliable without restrictions), Category 2 (Reliable with restrictions), Category 3 (Not reliable), and Category 4 (Not assignable). ToxRTool is a structured, criterion-based implementation of this approach."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between ToxRTool in vivo and in vitro assessments?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The in vivo assessment covers 21 criteria (8 mandatory) for studies conducted in living animals or human subjects, with a maximum score of 21. The in vitro assessment covers 18 criteria (6 mandatory) for cell- or tissue-based studies, with a maximum score of 18. Both produce Category 1–4 reliability scores using the same Klimisch methodology."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What do ToxRTool Categories 1, 2, 3, and 4 mean?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Category 1 (Reliable without restrictions): high-quality study suitable as a key study. Category 2 (Reliable with restrictions): acceptable quality with minor limitations. Category 3 (Not reliable): significant methodological deficiencies or mandatory criteria not met. Category 4 (Not assignable): insufficient documentation (e.g. reviews, secondary sources)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is ToxRTool Web free to use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. ToxRTool Web is completely free, open-source, and runs entirely in your browser. No account, registration, or internet connection is required after the page loads. All data stays on your device."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I export my ToxRTool assessment?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You can export your completed assessment as an Excel (.xlsx) file with multiple sheets (Study Info, Criteria Scores, Results Summary) or print it as a PDF directly from the browser. You can also copy a shareable link that encodes the full assessment state in the URL."
+      }
+    }
+  ]
 }
 </script>
 
@@ -333,6 +407,19 @@
   .footer-links a:hover { color: var(--green); }
   .footer-note { font-size: 0.75rem; color: var(--text-3); max-width: 420px; line-height: 1.5; }
 
+  /* FAQ */
+  .faq-list { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; }
+  .faq-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .faq-item summary {
+    padding: 18px 22px; font-weight: 500; font-size: 0.95rem; cursor: pointer;
+    list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    color: var(--text); user-select: none;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: '+'; font-size: 1.2rem; color: var(--green); flex-shrink: 0; transition: transform 0.2s; }
+  .faq-item[open] summary::after { content: '−'; }
+  .faq-answer { padding: 0 22px 18px; font-size: 0.875rem; color: var(--text-2); line-height: 1.7; border-top: 1px solid var(--border); padding-top: 14px; }
+
   /* Responsive */
   @media (max-width: 880px) {
     .hero { grid-template-columns: 1fr; gap: 40px; }
@@ -358,6 +445,7 @@
     <a href="#about">About</a>
     <a href="#how">How it works</a>
     <a href="#scoring">Scoring</a>
+    <a href="#faq">FAQ</a>
     <a href="https://joint-research-centre.ec.europa.eu/scientific-tools-and-databases/toxrtool-toxicological-data-reliability-assessment-tool_en" target="_blank">JRC Source ↗</a>
     <a href="assess.html?type=in_vivo" class="nav-cta">Start assessment</a>
   </div>
@@ -366,7 +454,7 @@
 <!-- HERO -->
 <section class="hero">
   <div>
-    <h1>Assess <em>toxicological</em> data reliability</h1>
+    <h1>ToxRTool — Assess <em>toxicological</em> study reliability</h1>
     <p class="hero-desc">
       A digitised, user-friendly tool inspired by the <a href="https://joint-research-centre.ec.europa.eu/scientific-tools-and-databases/toxrtool-toxicological-data-reliability-assessment-tool_en" target="_blank" rel="noopener">EU/JRC ToxRTool</a> — the EU reference standard for evaluating the quality and reliability of <em>in vivo</em> and <em>in vitro</em> toxicity studies.
     </p>
@@ -558,6 +646,39 @@
       </div>
       <span class="cta-arrow">↗</span>
     </a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-alt" id="faq">
+  <div class="section-label">FAQ</div>
+  <h2>Frequently asked questions</h2>
+  <p class="section-desc">Common questions about ToxRTool, the Klimisch scoring method, and how to use this tool.</p>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>What is ToxRTool?</summary>
+      <p class="faq-answer">ToxRTool (Toxicological data Reliability assessment Tool) is a standardised checklist developed by EURL ECVAM at the European Commission Joint Research Centre (JRC). It evaluates the inherent quality and reliability of in vivo and in vitro toxicological studies by scoring them across 18–21 criteria, producing a Category 1–4 reliability rating. This web implementation lets you run the assessment directly in your browser.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What is the Klimisch score?</summary>
+      <p class="faq-answer">The Klimisch score (Klimisch et al., 1997) is a widely used method for classifying the reliability of toxicological studies into four categories: Category 1 (Reliable without restrictions), Category 2 (Reliable with restrictions), Category 3 (Not reliable), and Category 4 (Not assignable). ToxRTool is a structured, criterion-based implementation of this approach, developed to make the scoring more systematic and transparent.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What is the difference between in vivo and in vitro assessments?</summary>
+      <p class="faq-answer">The in vivo assessment covers 21 criteria (8 mandatory) for studies conducted in living animals or human subjects, with a maximum score of 21. The in vitro assessment covers 18 criteria (6 mandatory) for cell- or tissue-based studies performed outside of living organisms, with a maximum score of 18. Both use the same five criterion groups and produce a Category 1–4 reliability score.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What do Categories 1, 2, 3, and 4 mean?</summary>
+      <p class="faq-answer"><strong>Category 1 — Reliable without restrictions:</strong> high-quality, well-documented study suitable as a key study. <strong>Category 2 — Reliable with restrictions:</strong> acceptable quality but with minor methodological limitations. <strong>Category 3 — Not reliable:</strong> significant deficiencies or one or more mandatory criteria not met. <strong>Category 4 — Not assignable:</strong> documentation insufficient to assess reliability (e.g. reviews, secondary sources, handbooks).</p>
+    </details>
+    <details class="faq-item">
+      <summary>Is ToxRTool Web free to use?</summary>
+      <p class="faq-answer">Yes — completely free, open-source, and runs entirely in your browser. No account, registration, or internet connection is required after the page loads. All your assessment data stays on your device via localStorage. Nothing is sent to any server.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I export my assessment results?</summary>
+      <p class="faq-answer">Yes. You can download your completed assessment as an Excel (.xlsx) file with multiple sheets (Study Info, Criteria Scores, Results Summary), or print it as a PDF directly from the browser. You can also copy a shareable link that encodes the full assessment state in the URL — paste it in any browser to restore the exact same assessment.</p>
+    </details>
   </div>
 </section>
 
