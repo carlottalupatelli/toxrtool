@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment — ToxRTool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #f7f8f5;
+    --bg-card:     #ffffff;
+    --bg-subtle:   #f0f4ee;
+    --border:      #e2e8df;
+    --border-strong: #c8d4c4;
+    --text:        #1a2118;
+    --text-2:      #4a5a47;
+    --text-3:      #7a8c77;
+    --green:       #2d7a45;
+    --green-light: #3a9657;
+    --green-bg:    #edf5ea;
+    --green-glow:  rgba(45,122,69,0.12);
+    --red:         #c0392b;
+    --red-bg:      #fdf0ef;
+    --red-border:  rgba(192,57,43,0.25);
+    --yellow:      #b07a1a;
+    --yellow-bg:   #fdf6e8;
+    --mono:        'DM Mono', monospace;
+    --sans:        'DM Sans', sans-serif;
+    --radius:      10px;
+    --radius-lg:   16px;
+    --shadow-sm:   0 1px 3px rgba(0,0,0,0.06);
+    --shadow:      0 4px 16px rgba(0,0,0,0.07);
+    --transition:  180ms ease;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(247,248,245,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 max(16px, calc((100vw - 1000px)/2));
+    height: 58px; display: flex; align-items: center; gap: 16px;
+  }
+  .topbar-back {
+    display: flex; align-items: center; gap: 6px;
+    color: var(--text-3); font-size: 0.825rem; text-decoration: none;
+    transition: color var(--transition); white-space: nowrap;
+  }
+  .topbar-back:hover { color: var(--green); }
+  .topbar-divider { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+  .topbar-type {
+    font-family: var(--mono); font-size: 0.72rem; font-weight: 600;
+    padding: 3px 10px; border-radius: 6px;
+    background: var(--green-bg); color: var(--green); border: 1px solid rgba(45,122,69,0.2);
+    white-space: nowrap;
+  }
+  .topbar-progress { flex: 1; display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .progress-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; min-width: 60px; }
+  .progress-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.3s ease; }
+  .progress-label { font-family: var(--mono); font-size: 0.7rem; color: var(--text-3); white-space: nowrap; }
+  .topbar-score {
+    display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  }
+  .score-num {
+    font-family: var(--mono); font-size: 1rem; font-weight: 600; color: var(--text);
+    min-width: 36px; text-align: right;
+  }
+  .cat-chip {
+    font-family: var(--mono); font-size: 0.7rem; font-weight: 600;
+    padding: 3px 9px; border-radius: 6px; transition: all 0.3s ease;
+  }
+  .cat-chip.c1 { background: var(--green-bg); color: var(--green); border: 1px solid rgba(45,122,69,0.25); }
+  .cat-chip.c2 { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(176,122,26,0.25); }
+  .cat-chip.c3 { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+  .cat-chip.c4 { background: var(--bg-subtle); color: var(--text-3); border: 1px solid var(--border); }
+  .btn-save {
+    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+    font-size: 0.8rem; color: var(--text-2); cursor: pointer;
+    padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg-card); transition: all var(--transition); white-space: nowrap;
+  }
+  .btn-save:hover { border-color: var(--green); color: var(--green); }
+  .btn-save.saved { color: var(--green); border-color: rgba(45,122,69,0.3); background: var(--green-bg); }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1000px; margin: 0 auto; padding: 32px 16px 80px; }
+
+  /* Steps nav */
+  .step-tabs {
+    display: flex; gap: 4px; background: var(--bg-subtle);
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 4px; margin-bottom: 28px;
+  }
+  .step-tab {
+    flex: 1; padding: 8px 12px; border-radius: 8px; cursor: pointer;
+    font-size: 0.82rem; font-weight: 500; color: var(--text-3); text-align: center;
+    transition: all var(--transition); border: none; background: none;
+  }
+  .step-tab.active { background: var(--bg-card); color: var(--text); box-shadow: var(--shadow-sm); }
+  .step-tab.done { color: var(--green); }
+  .step-tab:hover:not(.active) { color: var(--text-2); }
+
+  /* step panels */
+  .step-panel { display: none; }
+  .step-panel.active { display: block; }
+
+  /* ── STUDY INFO FORM ── */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field-group { display: flex; flex-direction: column; gap: 5px; }
+  .field-group.span2 { grid-column: span 2; }
+  label { font-size: 0.8rem; font-weight: 500; color: var(--text-2); }
+  input[type="text"], input[type="date"], textarea, select {
+    width: 100%; padding: 9px 12px;
+    border: 1.5px solid var(--border); border-radius: var(--radius);
+    background: var(--bg-card); color: var(--text); font-family: var(--sans); font-size: 0.875rem;
+    transition: border-color var(--transition);
+    outline: none; resize: vertical;
+  }
+  input[type="text"]:focus, input[type="date"]:focus, textarea:focus, select:focus {
+    border-color: var(--green); box-shadow: 0 0 0 3px var(--green-glow);
+  }
+  input::placeholder, textarea::placeholder { color: var(--text-3); }
+
+  .card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 0.95rem; font-weight: 600; color: var(--text);
+    margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+  }
+  .card-title-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: var(--green-bg); border: 1px solid rgba(45,122,69,0.2);
+    display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;
+  }
+
+  /* ── CRITERIA ── */
+  .group-section { margin-bottom: 16px; }
+  .group-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px; cursor: pointer;
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    transition: all var(--transition); user-select: none;
+  }
+  .group-header:hover { border-color: var(--border-strong); }
+  .group-header.open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom-color: transparent; }
+  .group-roman {
+    font-family: var(--mono); font-size: 0.7rem; font-weight: 600;
+    background: var(--green-bg); color: var(--green); border: 1px solid rgba(45,122,69,0.2);
+    padding: 2px 8px; border-radius: 5px; flex-shrink: 0;
+  }
+  .group-title { font-size: 0.875rem; font-weight: 600; color: var(--text); flex: 1; }
+  .group-meta { display: flex; align-items: center; gap: 8px; }
+  .group-score-ring {
+    font-family: var(--mono); font-size: 0.72rem; font-weight: 600;
+    color: var(--text-2); background: var(--bg-subtle);
+    padding: 2px 8px; border-radius: 5px; border: 1px solid var(--border);
+    min-width: 44px; text-align: center;
+  }
+  .group-chevron { color: var(--text-3); font-size: 0.8rem; transition: transform var(--transition); flex-shrink: 0; }
+  .group-header.open .group-chevron { transform: rotate(180deg); }
+
+  .group-body {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-top: none; border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg);
+    overflow: hidden;
+    display: none;
+  }
+  .group-body.open { display: block; }
+
+  /* criterion row */
+  .criterion {
+    display: grid; grid-template-columns: 28px 1fr auto;
+    gap: 12px; align-items: start; padding: 14px 18px;
+    border-bottom: 1px solid var(--bg-subtle); transition: background var(--transition);
+  }
+  .criterion:last-child { border-bottom: none; }
+  .criterion:hover { background: var(--bg-subtle); }
+  .criterion.unanswered { background: #fffbf0; }
+  .criterion.unanswered:hover { background: #fff8e8; }
+
+  .crit-num {
+    font-family: var(--mono); font-size: 0.72rem; color: var(--text-3); font-weight: 500;
+    padding-top: 2px; text-align: right;
+  }
+  .crit-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .crit-text {
+    font-size: 0.875rem; color: var(--text); line-height: 1.5; font-weight: 400;
+    display: flex; align-items: flex-start; gap: 7px; flex-wrap: wrap;
+  }
+  .crit-mandatory {
+    display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0;
+    font-family: var(--mono); font-size: 0.65rem; font-weight: 700;
+    color: var(--red); background: var(--red-bg); border: 1px solid var(--red-border);
+    padding: 1px 6px; border-radius: 4px;
+  }
+  .crit-explanation {
+    font-size: 0.78rem; color: var(--text-3); line-height: 1.5;
+    background: var(--bg-subtle); border-radius: 6px; padding: 8px 10px;
+    border-left: 2px solid var(--border-strong); display: none;
+  }
+  .crit-explanation.visible { display: block; }
+  .crit-comment {
+    display: none; margin-top: 4px;
+  }
+  .crit-comment.visible { display: block; }
+  .crit-comment textarea {
+    min-height: 56px; font-size: 0.8rem; padding: 7px 10px;
+  }
+  .crit-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+  .btn-explain {
+    font-size: 0.72rem; color: var(--text-3); cursor: pointer;
+    padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border);
+    background: none; transition: all var(--transition);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .btn-explain:hover { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+  .btn-comment {
+    font-size: 0.72rem; color: var(--text-3); cursor: pointer;
+    padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border);
+    background: none; transition: all var(--transition);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .btn-comment:hover { border-color: var(--border-strong); color: var(--text-2); }
+
+  /* toggle */
+  .score-toggle { display: flex; gap: 4px; flex-shrink: 0; padding-top: 2px; }
+  .toggle-btn {
+    width: 36px; height: 32px; border-radius: 7px; cursor: pointer;
+    font-family: var(--mono); font-size: 0.8rem; font-weight: 600;
+    border: 1.5px solid var(--border); background: none; color: var(--text-3);
+    transition: all var(--transition); display: flex; align-items: center; justify-content: center;
+  }
+  .toggle-btn:hover { border-color: var(--border-strong); color: var(--text-2); }
+  .toggle-btn.active-0 {
+    background: var(--red-bg); color: var(--red);
+    border-color: var(--red-border); box-shadow: 0 0 0 2px var(--red-bg);
+  }
+  .toggle-btn.active-1 {
+    background: var(--green-bg); color: var(--green);
+    border-color: rgba(45,122,69,0.35); box-shadow: 0 0 0 2px var(--green-glow);
+  }
+
+  /* ── RESULTS ── */
+  .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .result-block {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .result-block-label {
+    font-size: 0.72rem; font-weight: 600; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 0.07em; font-family: var(--mono);
+    margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+  }
+  .result-tag-auto {
+    font-size: 0.62rem; background: var(--bg-subtle); color: var(--text-3);
+    padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border);
+    font-weight: 500; letter-spacing: 0.02em;
+  }
+  .result-tag-user {
+    font-size: 0.62rem; background: var(--green-bg); color: var(--green);
+    padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(45,122,69,0.2);
+    font-weight: 500; letter-spacing: 0.02em;
+  }
+  .result-cat-display {
+    font-family: var(--mono); font-size: 1.5rem; font-weight: 600;
+    color: var(--text); margin-bottom: 6px;
+  }
+  .result-cat-desc { font-size: 0.8rem; color: var(--text-2); }
+  .result-block.warning { border-color: rgba(176,122,26,0.4); background: var(--yellow-bg); }
+  .result-block.warning .result-cat-display { color: var(--yellow); }
+
+  /* Group score summary */
+  .score-summary {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .score-summary-header {
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    font-size: 0.82rem; font-weight: 600; color: var(--text-2);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .score-summary-total {
+    font-family: var(--mono); font-size: 0.875rem; font-weight: 700; color: var(--text);
+  }
+  .score-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 18px; border-bottom: 1px solid var(--bg-subtle); font-size: 0.82rem;
+  }
+  .score-row:last-child { border-bottom: none; }
+  .score-row-label { color: var(--text-2); }
+  .score-row-val { font-family: var(--mono); font-size: 0.8rem; font-weight: 600; color: var(--text); }
+
+  /* mandatory check list */
+  .mandatory-list {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .mandatory-list-header {
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    font-size: 0.82rem; font-weight: 600; color: var(--text-2);
+  }
+  .mandatory-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 18px; border-bottom: 1px solid var(--bg-subtle); font-size: 0.8rem;
+  }
+  .mandatory-item:last-child { border-bottom: none; }
+  .mand-icon { font-size: 0.9rem; flex-shrink: 0; }
+  .mand-text { flex: 1; color: var(--text-2); }
+  .mand-score { font-family: var(--mono); font-size: 0.72rem; font-weight: 700; flex-shrink: 0; }
+  .mand-score.pass { color: var(--green); }
+  .mand-score.fail { color: var(--red); }
+
+  /* evaluator input */
+  .eval-input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* deviation warning */
+  #deviation-block { display: none; }
+  #deviation-block.visible { display: block; }
+  .deviation-banner {
+    background: var(--yellow-bg); border: 1px solid rgba(176,122,26,0.3);
+    border-radius: var(--radius); padding: 12px 16px; margin-bottom: 14px;
+    font-size: 0.82rem; color: var(--yellow); display: flex; align-items: flex-start; gap: 8px;
+  }
+
+  /* optional section */
+  .optional-toggle {
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+    padding: 14px 18px; font-size: 0.85rem; color: var(--text-2); font-weight: 500;
+    background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    transition: all var(--transition); margin-bottom: 4px;
+  }
+  .optional-toggle:hover { border-color: var(--border-strong); color: var(--text); }
+  .optional-toggle .opt-chevron { margin-left: auto; font-size: 0.75rem; color: var(--text-3); transition: transform var(--transition); }
+  .optional-toggle.open .opt-chevron { transform: rotate(180deg); }
+  .optional-content { display: none; }
+  .optional-content.open { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* export bar */
+  .export-bar {
+    position: sticky; bottom: 0; z-index: 100;
+    background: rgba(247,248,245,0.96); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border); padding: 14px max(16px, calc((100vw - 1000px)/2));
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    flex-wrap: wrap;
+  }
+  .export-bar-left { font-size: 0.82rem; color: var(--text-3); }
+  .export-bar-left strong { color: var(--text); font-weight: 600; }
+  .export-actions { display: flex; gap: 10px; }
+  .btn-export {
+    display: flex; align-items: center; gap: 7px;
+    padding: 9px 18px; border-radius: var(--radius); font-size: 0.85rem; font-weight: 500;
+    cursor: pointer; transition: all var(--transition); border: none;
+  }
+  .btn-export.primary {
+    background: var(--green); color: #fff; box-shadow: 0 2px 8px var(--green-glow);
+  }
+  .btn-export.primary:hover { background: var(--green-light); transform: translateY(-1px); box-shadow: 0 4px 14px var(--green-glow); }
+  .btn-export.secondary {
+    background: var(--bg-card); color: var(--text-2); border: 1.5px solid var(--border);
+  }
+  .btn-export.secondary:hover { border-color: var(--border-strong); color: var(--text); }
+
+  /* Next/Back buttons */
+  .step-nav { display: flex; justify-content: space-between; margin-top: 24px; }
+  .btn-step-next {
+    background: var(--green); color: #fff; padding: 11px 24px; border-radius: var(--radius);
+    font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none;
+    display: flex; align-items: center; gap: 7px;
+    transition: all var(--transition); box-shadow: 0 2px 8px var(--green-glow);
+  }
+  .btn-step-next:hover { background: var(--green-light); }
+  .btn-step-back {
+    background: none; color: var(--text-2); padding: 11px 24px; border-radius: var(--radius);
+    font-size: 0.875rem; font-weight: 500; cursor: pointer;
+    border: 1.5px solid var(--border); transition: all var(--transition);
+    display: flex; align-items: center; gap: 7px;
+  }
+  .btn-step-back:hover { border-color: var(--border-strong); color: var(--text); }
+
+  /* unanswered warning */
+  .unanswered-warning {
+    background: var(--yellow-bg); border: 1px solid rgba(176,122,26,0.3);
+    border-radius: var(--radius); padding: 12px 16px; font-size: 0.82rem; color: var(--yellow);
+    display: none; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .unanswered-warning.visible { display: flex; }
+
+  select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a8c77' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+  @media (max-width: 720px) {
+    .results-grid { grid-template-columns: 1fr; }
+    .eval-input-grid { grid-template-columns: 1fr; }
+    .optional-content.open { grid-template-columns: 1fr; }
+    .info-grid { grid-template-columns: 1fr; }
+    .info-grid .field-group.span2 { grid-column: span 1; }
+    .criterion { grid-template-columns: 22px 1fr auto; gap: 8px; }
+    .export-bar { flex-direction: column; align-items: stretch; }
+    .export-actions { justify-content: stretch; }
+    .btn-export { flex: 1; justify-content: center; }
+  }
+
+  @media print {
+    .topbar, .step-tabs, .export-bar, .btn-explain, .btn-comment, .crit-actions,
+    .btn-step-next, .btn-step-back, .step-panel:not(.active) { display: none !important; }
+    body { font-size: 11pt; background: white; }
+    .card, .group-header, .group-body, .result-block, .score-summary, .mandatory-list {
+      box-shadow: none; border: 1px solid #ccc; border-radius: 4pt;
+    }
+    .container { padding: 0; max-width: 100%; }
+    .group-body { display: block !important; border-radius: 0 0 4pt 4pt; }
+    .toggle-btn { border: 1px solid #999; background: none !important; }
+    .toggle-btn.active-1::after { content: '1'; color: #2d7a45; font-weight: bold; }
+    .toggle-btn.active-0::after { content: '0'; color: #c0392b; font-weight: bold; }
+    .crit-explanation.visible { display: block; }
+    .step-panel { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar" id="topbar">
+  <a href="index.html" class="topbar-back">
+    <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Home
+  </a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-type" id="study-type-badge">In Vivo</span>
+  <div class="topbar-progress">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <span class="progress-label" id="progress-label">0 / 21</span>
+  </div>
+  <div class="topbar-score">
+    <span class="score-num" id="score-display">0/21</span>
+    <span class="cat-chip c4" id="cat-display">Cat. —</span>
+  </div>
+  <button class="btn-save" id="save-btn" onclick="saveProgress()">
+    <svg width="13" height="13" fill="none" viewBox="0 0 13 13"><path d="M2 2h7l2 2v7a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/><path d="M4 2v3h5V2M4 9h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    Save
+  </button>
+</div>
+
+<div class="container">
+  <!-- STEP TABS -->
+  <div class="step-tabs">
+    <button class="step-tab active" data-step="1" onclick="goToStep(1)">1 · Study Info</button>
+    <button class="step-tab" data-step="2" onclick="goToStep(2)">2 · Criteria</button>
+    <button class="step-tab" data-step="3" onclick="goToStep(3)">3 · Results</button>
+  </div>
+
+  <!-- ── STEP 1: STUDY INFO ── -->
+  <div class="step-panel active" id="step-1">
+    <div class="card">
+      <div class="card-title">
+        <div class="card-title-icon">📄</div>
+        Study under evaluation
+      </div>
+      <div class="info-grid">
+        <div class="field-group span2">
+          <label for="f-authors">Authors</label>
+          <input type="text" id="f-authors" placeholder="e.g. Smith J., Jones A. et al.">
+        </div>
+        <div class="field-group span2">
+          <label for="f-title">Title</label>
+          <input type="text" id="f-title" placeholder="Full study title">
+        </div>
+        <div class="field-group span2">
+          <label for="f-source">Testing facility, year, sponsor, study no. or bibliographic reference</label>
+          <textarea id="f-source" rows="2" placeholder="e.g. Harlan Laboratories, 2018. Study no. 1234-567. Sponsored by Company X."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="card-title-icon">👤</div>
+        Evaluator information
+      </div>
+      <div class="info-grid">
+        <div class="field-group">
+          <label for="f-eval-name">Evaluator name</label>
+          <input type="text" id="f-eval-name" placeholder="Your name">
+        </div>
+        <div class="field-group">
+          <label for="f-eval-date">Date / period of evaluation</label>
+          <input type="date" id="f-eval-date">
+        </div>
+        <div class="field-group span2">
+          <label for="f-eval-affiliation">Affiliation</label>
+          <input type="text" id="f-eval-affiliation" placeholder="Institution or organisation">
+        </div>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <div></div>
+      <button class="btn-step-next" onclick="goToStep(2)">
+        Begin Assessment
+        <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: CRITERIA ── -->
+  <div class="step-panel" id="step-2">
+    <div class="unanswered-warning" id="unanswered-warning">
+      <svg width="15" height="15" fill="none" viewBox="0 0 15 15"><circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M7.5 4.5v4M7.5 10.5v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span id="unanswered-text">Please answer all criteria before proceeding.</span>
+    </div>
+    <div id="criteria-container"></div>
+    <div class="step-nav">
+      <button class="btn-step-back" onclick="goToStep(1)">
+        <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back
+      </button>
+      <button class="btn-step-next" onclick="proceedToResults()">
+        View Results
+        <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: RESULTS ── -->
+  <div class="step-panel" id="step-3">
+    <div id="results-container"></div>
+    <div class="step-nav">
+      <button class="btn-step-back" onclick="goToStep(2)">
+        <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Edit criteria
+      </button>
+      <div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPORT BAR (shown on step 2 and 3) -->
+<div class="export-bar" id="export-bar" style="display:none">
+  <div class="export-bar-left">
+    Score: <strong id="export-score-label">—</strong> · Category: <strong id="export-cat-label">—</strong>
+  </div>
+  <div class="export-actions">
+    <button class="btn-export secondary" id="copy-link-btn" onclick="copyShareLink()">
+      <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M8 3h2a2 2 0 0 1 0 4H8M6 11H4a2 2 0 0 1 0-4h2M5 7h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      Copy Link
+    </button>
+    <button class="btn-export secondary" onclick="window.print()">
+      <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><rect x="2" y="5" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M4 5V3h6v2M4 10h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      Print / PDF
+    </button>
+    <button class="btn-export primary" onclick="exportExcel()">
+      <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M7 2v7M4 6l3 3 3-3M2 10v2h10v-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download Excel
+    </button>
+  </div>
+</div>
+
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const CRITERIA = {
+  in_vivo: [
+    { group: 'I', groupName: 'Test Substance Identification', items: [
+      { n: 1, text: 'Was the test substance identified?', mandatory: true,
+        explain: 'At minimum the substance name (IUPAC or other recognised name) and CAS number should be given. A unique identifier such as SMILES or InChI is also acceptable.' },
+      { n: 2, text: 'Is the purity of the substance given?', mandatory: false,
+        explain: 'The purity of the substance as used in the study should be stated. If a technical product was tested, this should be described.' },
+      { n: 3, text: 'Is information on the source/origin of the substance given?', mandatory: false,
+        explain: 'Name and address of the supplier or manufacturer of the test substance.' },
+      { n: 4, text: 'Is all information on the nature and/or physico-chemical properties of the test substance given that is necessary to characterise the study?', mandatory: false,
+        explain: 'This refers to properties relevant to the specific study type, e.g. vapour pressure for inhalation studies, solubility for aquatic studies, molecular weight for PBPK modelling.' },
+    ]},
+    { group: 'II', groupName: 'Test Organism Characterisation', items: [
+      { n: 5, text: 'Is the species given?', mandatory: true,
+        explain: 'The species and, for vertebrates, the common name should be stated.' },
+      { n: 6, text: 'Is the sex of the test organism given?', mandatory: false,
+        explain: 'Give 1 point if the sex is stated; give 1 point also for single-sex experiments where the sex is evident from the context.' },
+      { n: 7, text: 'Is information given on the strain of test animals plus, if considered necessary by the evaluator, on the supplier and colony conditions?', mandatory: false,
+        explain: 'Strain is important for reproducibility. Supplier and housing conditions are considered necessary for repeated dose toxicity and reproductive toxicity studies.' },
+      { n: 8, text: 'Is age or body weight of the test organisms at the start of the study given?', mandatory: false,
+        explain: 'For studies where this information is critical for interpretation, e.g. developmental toxicity studies, age must be stated.' },
+      { n: 9, text: 'For repeated dose toxicity studies only (give point for other study types): Is information on the health status of test organisms given?', mandatory: false,
+        explain: 'For repeated dose toxicity studies, information on the health status (e.g. specific pathogen free, conventional) should be given. Score 1 automatically for other study types.' },
+    ]},
+    { group: 'III', groupName: 'Study Design Description', items: [
+      { n: 10, text: 'Is the administration route given?', mandatory: true,
+        explain: 'The route of administration (oral, dermal, inhalation, intravenous, etc.) must be clearly stated.' },
+      { n: 11, text: 'Are doses administered or concentrations in application media given?', mandatory: true,
+        explain: 'Doses (e.g. mg/kg bw/day) or concentrations must be given for all dose groups including controls.' },
+      { n: 12, text: 'Are frequency and duration of exposure as well as time-points of observations explicitly stated?', mandatory: true,
+        explain: 'E.g. once daily for 28 days; observations at 7, 14, 21 and 28 days. All relevant time data must be provided.' },
+      { n: 13, text: 'Were negative (where required) and positive controls (where required) included (give point also if not applicable)?', mandatory: true,
+        explain: 'If controls are scientifically necessary, they must be included. Score 1 if controls are included or if they are genuinely not applicable.' },
+      { n: 14, text: 'Is the number of animals (in case of experimental human studies: number of test subjects) given for each dose group?', mandatory: true,
+        explain: 'Number per dose group must be reported at the start of the study. For studies with sex-specific endpoints, numbers per sex per group are required.' },
+      { n: 15, text: 'Are sufficient details of the administration scheme given to judge the study (see explanations for details)?', mandatory: false,
+        explain: 'For inhalation: concentration in air, particle size distribution. For dermal: percentage of body surface area, vehicle. For gavage: volume per kg bw. Details must allow independent replication.' },
+      { n: 16, text: 'For inhalation studies and repeated dose toxicity studies only (give point for other study types): Are housing and feeding conditions given?', mandatory: false,
+        explain: 'Housing conditions (temperature, humidity, light cycle, cage type) and feeding (diet type, food and water access) should be described for inhalation and subchronic/chronic studies.' },
+    ]},
+    { group: 'IV', groupName: 'Study Results Documentation', items: [
+      { n: 17, text: 'Are the study endpoint(s) and their method(s) of determination clearly described?', mandatory: false,
+        explain: 'All endpoints measured in the study (e.g. mortality, body weight, organ weights, histopathology) should be identified. The analytical or clinical methods used should be described.' },
+      { n: 18, text: 'Is the description of the study results for all endpoints investigated transparent and reproducible?', mandatory: false,
+        explain: 'Data should be presented in a way that allows independent evaluation. Means, standard deviations, individual animal data or summary statistics should be provided.' },
+      { n: 19, text: 'Are the statistical methods applied for data analysis given and applied in a transparent and appropriate manner?', mandatory: false,
+        explain: 'Statistical tests used should be named. For studies with multiple comparisons, appropriate corrections should be noted. Non-parametric tests are expected for ordinal data.' },
+    ]},
+    { group: 'V', groupName: 'Plausibility of Study Design and Results', items: [
+      { n: 20, text: 'Is the study design chosen appropriate for obtaining the substance-specific data needed?', mandatory: true,
+        explain: 'The study design (species, route, doses, duration) should be appropriate for addressing the intended question. Consider whether the design is capable of detecting the expected effects at the dose levels used.' },
+      { n: 21, text: 'Are the quantitative study results reliable (see explanations for arguments)?', mandatory: false,
+        explain: 'Consider: Are dose-response relationships plausible? Are results consistent with the biological mechanism? Are outliers explained? Are control values within historical norms? Reviewer judgement is required here.' },
+    ]},
+  ],
+  in_vitro: [
+    { group: 'I', groupName: 'Test Substance Identification', items: [
+      { n: 1, text: 'Was the test substance identified?', mandatory: true,
+        explain: 'At minimum the substance name (IUPAC or other recognised name) and CAS number should be given.' },
+      { n: 2, text: 'Is the purity of the substance given?', mandatory: false,
+        explain: 'Purity as used in the study. If a technical mixture was tested, composition should be described.' },
+      { n: 3, text: 'Is information on the source/origin of the substance given?', mandatory: false,
+        explain: 'Name and address of the supplier or manufacturer.' },
+      { n: 4, text: 'Is all information on the nature and/or physico-chemical properties of the test substance given that is necessary to characterise the study?', mandatory: false,
+        explain: 'For in vitro studies, stability in the test medium and solubility are particularly important. Potential for cytotoxicity at test concentrations should be addressed.' },
+    ]},
+    { group: 'II', groupName: 'Test System Characterisation', items: [
+      { n: 5, text: 'Is the test system described?', mandatory: false,
+        explain: 'The biological system used (cell line, primary cells, tissue, organism) should be named and described.' },
+      { n: 6, text: 'Is information given on the source/origin of the test system?', mandatory: false,
+        explain: 'Source organism, tissue of origin, supplier (for cell lines), passage number, or derivation should be provided.' },
+      { n: 7, text: 'Are necessary information on test system properties, and on conditions of cultivation/maintenance given?', mandatory: false,
+        explain: 'Culture medium, supplements (serum, growth factors), temperature, CO2 concentration, and any other relevant conditions should be described.' },
+    ]},
+    { group: 'III', groupName: 'Study Design Description', items: [
+      { n: 8, text: 'Is the method of administration given (see explanations for details)?', mandatory: false,
+        explain: 'The method of adding the test substance (dissolved, suspended, in medium, with or without solvent) should be described. Solvent/vehicle and its concentration should be given.' },
+      { n: 9, text: 'Are doses administered or concentrations in application media given?', mandatory: true,
+        explain: 'Test concentrations in the culture medium (e.g. µM, µg/mL) must be reported for all tested concentrations.' },
+      { n: 10, text: 'Are frequency and duration of exposure as well as time-points of observations explicitly stated?', mandatory: true,
+        explain: 'Duration of treatment, time of observation/measurement, and any renewal of test medium must be described.' },
+      { n: 11, text: 'Were negative controls included (give also point, if not necessary, see explanations)?', mandatory: true,
+        explain: 'Untreated controls and/or solvent controls should be included unless justified. Score 1 if included or if scientifically not necessary (justify in comments).' },
+      { n: 12, text: 'Were positive controls included (give also point, if not necessary, see explanations)?', mandatory: true,
+        explain: 'A known active reference compound should be included to validate the test system sensitivity. Score 1 if included or if use of a positive control is not appropriate for the test type (justify).' },
+      { n: 13, text: 'Is the number of replicates (or complete repetitions of experiment) given?', mandatory: false,
+        explain: 'The number of replicates per treatment (technical replicates) and/or the number of independent experiment repetitions (biological replicates) should be stated.' },
+    ]},
+    { group: 'IV', groupName: 'Study Results Documentation', items: [
+      { n: 14, text: 'Are the study endpoint(s) and their method(s) of determination clearly described?', mandatory: false,
+        explain: 'All endpoints (cell viability, enzyme activity, reporter gene expression, etc.) and the analytical/assay methods used should be clearly described.' },
+      { n: 15, text: 'Is the description of the study results for all endpoints investigated transparent and reproducible?', mandatory: false,
+        explain: 'Data should be presented numerically (mean ± SD or SEM). Concentration-response relationships should be visible. Outliers and their treatment should be described.' },
+      { n: 16, text: 'Are the statistical methods for data analysis given and applied in a transparent and appropriate manner?', mandatory: false,
+        explain: 'Statistical tests used should be named. IC50 or other derived values should include confidence intervals or methods of calculation.' },
+    ]},
+    { group: 'V', groupName: 'Plausibility of Study Design and Data', items: [
+      { n: 17, text: 'Is the study design chosen appropriate for obtaining the substance-specific data needed?', mandatory: true,
+        explain: 'The test system and method should be appropriate for the endpoint and substance of interest. Consider potential confounders: cytotoxicity, interference with assay detection system, or chemical instability.' },
+      { n: 18, text: 'Are the quantitative study results reliable (see explanations for arguments)?', mandatory: false,
+        explain: 'Consider: Are concentration-response relationships plausible? Are control values within expected ranges? Are results consistent between replicates? Is there evidence of cytotoxicity confounding the results?' },
+    ]},
+  ]
+};
+
+const THRESHOLDS = {
+  in_vivo:   { max: 21, cat1: 18, cat2: 13 },
+  in_vitro:  { max: 18, cat1: 15, cat2: 11 }
+};
+
+const RED_CRITERIA = {
+  in_vivo:   [1, 5, 10, 11, 12, 13, 14, 20],
+  in_vitro:  [1, 9, 10, 11, 12, 17]
+};
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let studyType = 'in_vivo';
+let scores = {};       // { critNum: 0|1 }
+let comments = {};     // { critNum: string }
+let currentStep = 1;
+
+function init() {
+  const params = new URLSearchParams(window.location.search);
+  studyType = params.get('type') === 'in_vitro' ? 'in_vitro' : 'in_vivo';
+  document.getElementById('study-type-badge').textContent =
+    studyType === 'in_vitro' ? 'In Vitro' : 'In Vivo';
+  document.title = (studyType === 'in_vitro' ? 'In Vitro' : 'In Vivo') + ' Assessment — ToxRTool';
+
+  // Try to load from URL hash first (shareable link takes priority)
+  const hash = location.hash;
+  if (hash.startsWith('#v1_')) {
+    try {
+      const decoded = JSON.parse(decodeURIComponent(escape(atob(hash.slice(4)))));
+      studyType = decoded.studyType || studyType;
+      scores = decoded.scores || {};
+      comments = decoded.comments || {};
+      if (decoded.info) restoreInfo(decoded.info);
+      evalCategoryC = decoded.evalCategoryC || null;
+      evalJustification = decoded.evalJustification || '';
+      history.replaceState(null, '', location.pathname + location.search);
+    } catch(e) {}
+  } else {
+    // Try to load saved progress from localStorage
+    const saved = localStorage.getItem('toxrtool_' + studyType);
+    if (saved) {
+      try {
+        const d = JSON.parse(saved);
+        scores = d.scores || {};
+        comments = d.comments || {};
+        if (d.info) restoreInfo(d.info);
+      } catch(e) {}
+    }
+  }
+
+  renderCriteria();
+  updateProgressBar();
+  updateScoreDisplay();
+}
+
+function restoreInfo(info) {
+  ['authors','title','source','eval-name','eval-date','eval-affiliation'].forEach(k => {
+    const el = document.getElementById('f-' + k);
+    if (el && info[k]) el.value = info[k];
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER CRITERIA
+// ═══════════════════════════════════════════════════════
+function renderCriteria() {
+  const container = document.getElementById('criteria-container');
+  const groups = CRITERIA[studyType];
+  container.innerHTML = '';
+
+  groups.forEach((group, gi) => {
+    const total = group.items.length;
+    const answered = group.items.filter(i => scores[i.n] !== undefined).length;
+    const scored = group.items.reduce((s, i) => s + (scores[i.n] || 0), 0);
+
+    const section = document.createElement('div');
+    section.className = 'group-section';
+    section.id = 'group-' + group.group;
+
+    section.innerHTML = `
+      <div class="group-header open" onclick="toggleGroup(this, 'body-${group.group}')">
+        <span class="group-roman">${group.group}</span>
+        <span class="group-title">${group.groupName}</span>
+        <div class="group-meta">
+          <span class="group-score-ring" id="gscore-${group.group}">${scored}/${total}</span>
+        </div>
+        <span class="group-chevron">▲</span>
+      </div>
+      <div class="group-body open" id="body-${group.group}">
+        ${group.items.map(item => renderCriterion(item)).join('')}
+      </div>`;
+    container.appendChild(section);
+  });
+}
+
+function renderCriterion(item) {
+  const score = scores[item.n];
+  const mandBadge = item.mandatory
+    ? `<span class="crit-mandatory">● mandatory</span>`
+    : '';
+  const scoreVal0 = score === 0 ? 'active-0' : '';
+  const scoreVal1 = score === 1 ? 'active-1' : '';
+  const unansweredClass = score === undefined ? 'unanswered' : '';
+  const commentVal = comments[item.n] || '';
+  const commentHasVal = commentVal ? 'visible' : '';
+
+  return `
+    <div class="criterion ${unansweredClass}" id="crit-${item.n}">
+      <span class="crit-num">${item.n}</span>
+      <div class="crit-body">
+        <div class="crit-text">
+          ${mandBadge}
+          <span>${item.text}</span>
+        </div>
+        <div class="crit-explanation" id="exp-${item.n}">${item.explain}</div>
+        <div class="crit-comment ${commentHasVal}" id="com-${item.n}">
+          <textarea placeholder="Evaluator notes (optional)…" oninput="updateComment(${item.n}, this.value)">${commentVal}</textarea>
+        </div>
+        <div class="crit-actions">
+          <button class="btn-explain" onclick="toggleExplain(${item.n})">ℹ Explanation</button>
+          <button class="btn-comment" onclick="toggleComment(${item.n})">✎ Note</button>
+        </div>
+      </div>
+      <div class="score-toggle">
+        <button class="toggle-btn ${scoreVal0}" onclick="setScore(${item.n}, 0)" title="Not met" aria-label="Score 0">0</button>
+        <button class="toggle-btn ${scoreVal1}" onclick="setScore(${item.n}, 1)" title="Met" aria-label="Score 1">1</button>
+      </div>
+    </div>`;
+}
+
+function toggleGroup(header, bodyId) {
+  const body = document.getElementById(bodyId);
+  header.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+function toggleExplain(n) {
+  document.getElementById('exp-' + n).classList.toggle('visible');
+}
+
+function toggleComment(n) {
+  document.getElementById('com-' + n).classList.toggle('visible');
+}
+
+// ═══════════════════════════════════════════════════════
+// SCORING
+// ═══════════════════════════════════════════════════════
+function setScore(n, val) {
+  scores[n] = val;
+  const crit = document.getElementById('crit-' + n);
+  if (crit) {
+    crit.classList.remove('unanswered');
+    const btns = crit.querySelectorAll('.toggle-btn');
+    btns[0].className = 'toggle-btn' + (val === 0 ? ' active-0' : '');
+    btns[1].className = 'toggle-btn' + (val === 1 ? ' active-1' : '');
+  }
+  updateGroupScore(n);
+  updateProgressBar();
+  updateScoreDisplay();
+}
+
+function updateGroupScore(n) {
+  const groups = CRITERIA[studyType];
+  for (const g of groups) {
+    if (g.items.some(i => i.n === n)) {
+      const total = g.items.length;
+      const scored = g.items.reduce((s, i) => s + (scores[i.n] || 0), 0);
+      const el = document.getElementById('gscore-' + g.group);
+      if (el) el.textContent = scored + '/' + total;
+      break;
+    }
+  }
+}
+
+function updateComment(n, val) {
+  comments[n] = val;
+}
+
+function calcScores() {
+  const allItems = CRITERIA[studyType].flatMap(g => g.items);
+  const total = allItems.reduce((s, i) => s + (scores[i.n] || 0), 0);
+  const max = THRESHOLDS[studyType].max;
+  const redCrit = RED_CRITERIA[studyType];
+  const allRedMet = redCrit.every(n => scores[n] === 1);
+  const t = THRESHOLDS[studyType];
+
+  let resultA;
+  if (total >= t.cat1) resultA = 1;
+  else if (total >= t.cat2) resultA = 2;
+  else resultA = 3;
+
+  const resultB = (resultA <= 2 && !allRedMet) ? 3 : resultA;
+  const answered = Object.keys(scores).length;
+
+  return { total, max, allRedMet, resultA, resultB, answered, allItems, redCrit };
+}
+
+function catLabel(c) {
+  return ['','Reliable without restrictions','Reliable with restrictions','Not reliable','Not assignable'][c] || '—';
+}
+
+function catClass(c) {
+  return ['','c1','c2','c3','c4'][c] || 'c4';
+}
+
+function updateProgressBar() {
+  const allItems = CRITERIA[studyType].flatMap(g => g.items);
+  const total = allItems.length;
+  const answered = allItems.filter(i => scores[i.n] !== undefined).length;
+  const pct = total > 0 ? Math.round(answered / total * 100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = answered + ' / ' + total;
+}
+
+function updateScoreDisplay() {
+  const { total, max, resultB } = calcScores();
+  document.getElementById('score-display').textContent = total + '/' + max;
+  const chip = document.getElementById('cat-display');
+  chip.textContent = 'Cat. ' + resultB;
+  chip.className = 'cat-chip ' + catClass(resultB);
+
+  // export bar labels
+  const exportBar = document.getElementById('export-bar');
+  if (currentStep >= 2) exportBar.style.display = 'flex';
+  document.getElementById('export-score-label').textContent = total + '/' + max + ' pts';
+  document.getElementById('export-cat-label').textContent = 'Category ' + resultB + ' — ' + catLabel(resultB);
+}
+
+// ═══════════════════════════════════════════════════════
+// STEP NAVIGATION
+// ═══════════════════════════════════════════════════════
+function goToStep(n) {
+  currentStep = n;
+  document.querySelectorAll('.step-tab').forEach(t => {
+    const s = parseInt(t.dataset.step);
+    t.classList.remove('active','done');
+    if (s === n) t.classList.add('active');
+    else if (s < n) t.classList.add('done');
+  });
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  document.getElementById('export-bar').style.display = n >= 2 ? 'flex' : 'none';
+  if (n === 3) renderResults();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateScoreDisplay();
+}
+
+function proceedToResults() {
+  const allItems = CRITERIA[studyType].flatMap(g => g.items);
+  const unanswered = allItems.filter(i => scores[i.n] === undefined);
+  const warn = document.getElementById('unanswered-warning');
+  if (unanswered.length > 0) {
+    warn.classList.add('visible');
+    document.getElementById('unanswered-text').textContent =
+      unanswered.length + ' criteria unanswered. Please score all criteria (0 or 1) before proceeding.';
+    // Highlight unanswered
+    unanswered.forEach(i => {
+      const el = document.getElementById('crit-' + i.n);
+      if (el) { el.classList.add('unanswered'); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    });
+    return;
+  }
+  warn.classList.remove('visible');
+  goToStep(3);
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER RESULTS
+// ═══════════════════════════════════════════════════════
+let evalCategoryC = null;
+let evalJustification = '';
+
+function renderResults() {
+  const { total, max, allRedMet, resultA, resultB, redCrit, allItems } = calcScores();
+  const groups = CRITERIA[studyType];
+  const container = document.getElementById('results-container');
+
+  const isDowngraded = resultA !== resultB;
+  const catCClass = catClass(resultB);
+
+  // Group scores
+  const groupScoreRows = groups.map(g => {
+    const s = g.items.reduce((acc, i) => acc + (scores[i.n] || 0), 0);
+    return `<div class="score-row">
+      <span class="score-row-label">Group ${g.group}: ${g.groupName}</span>
+      <span class="score-row-val">${s} / ${g.items.length}</span>
+    </div>`;
+  }).join('');
+
+  // Mandatory check
+  const mandItems = allItems.filter(i => i.mandatory);
+  const mandRows = mandItems.map(i => {
+    const pass = scores[i.n] === 1;
+    return `<div class="mandatory-item">
+      <span class="mand-icon">${pass ? '✓' : '✗'}</span>
+      <span class="mand-text">${i.n}. ${i.text.substring(0, 70)}${i.text.length > 70 ? '…' : ''}</span>
+      <span class="mand-score ${pass ? 'pass' : 'fail'}">${pass ? 'MET' : 'NOT MET'}</span>
+    </div>`;
+  }).join('');
+
+  const savedC = evalCategoryC || resultB;
+  const savedJ = evalJustification || '';
+
+  container.innerHTML = `
+    <div class="results-grid">
+      <div class="result-block">
+        <div class="result-block-label">Result A <span class="result-tag-auto">auto</span></div>
+        <div class="result-cat-display">Category ${resultA}</div>
+        <div class="result-cat-desc">${catLabel(resultA)}<br><small style="color:var(--text-3);font-size:0.75rem">Based on total score: ${total}/${max} pts</small></div>
+      </div>
+      <div class="result-block ${isDowngraded ? 'warning' : ''}">
+        <div class="result-block-label">Result B <span class="result-tag-auto">auto</span></div>
+        <div class="result-cat-display">Category ${resultB}</div>
+        <div class="result-cat-desc">${catLabel(resultB)}<br><small style="color:var(--text-3);font-size:0.75rem">${isDowngraded ? '⚠ Downgraded: not all mandatory criteria met' : allRedMet ? '✓ All mandatory criteria met' : ''}</small></div>
+      </div>
+    </div>
+
+    <div class="score-summary">
+      <div class="score-summary-header">
+        Score by criteria group
+        <span class="score-summary-total">${total} / ${max} total points</span>
+      </div>
+      ${groupScoreRows}
+    </div>
+
+    <div class="mandatory-list">
+      <div class="mandatory-list-header">
+        Mandatory criteria check (● = must score 1 for Category 1 or 2)
+      </div>
+      ${mandRows}
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <div class="card-title-icon">✏️</div>
+        Evaluator's proposal
+      </div>
+      <div class="eval-input-grid">
+        <div class="field-group">
+          <label for="eval-cat-c">C — Evaluator's proposed category</label>
+          <select id="eval-cat-c" onchange="onCatCChange(this.value)">
+            <option value="" ${!savedC ? 'selected':''}>— Select —</option>
+            <option value="1" ${savedC==1?'selected':''}>Category 1 — Reliable without restrictions</option>
+            <option value="2" ${savedC==2?'selected':''}>Category 2 — Reliable with restrictions</option>
+            <option value="3" ${savedC==3?'selected':''}>Category 3 — Not reliable</option>
+            <option value="4" ${savedC==4?'selected':''}>Category 4 — Not assignable</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Recommended (Result B)</label>
+          <div style="padding:9px 12px; background:var(--bg-subtle); border-radius:var(--radius); font-size:0.875rem; color:var(--text-2); border:1.5px solid var(--border);">
+            Category ${resultB} — ${catLabel(resultB)}
+          </div>
+        </div>
+      </div>
+      <div id="deviation-block">
+        <div class="deviation-banner">
+          <svg width="15" height="15" fill="none" viewBox="0 0 15 15"><circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M7.5 4v4M7.5 10h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          Your proposed category differs from Result B. Please provide justification below.
+        </div>
+        <div class="field-group">
+          <label for="eval-justif">D — Justification for deviation</label>
+          <textarea id="eval-justif" rows="3" placeholder="Explain why you deviate from the tool's proposed category…" oninput="evalJustification=this.value">${savedJ}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="optional-toggle" onclick="toggleOptional(this)" id="opt-toggle">
+      <svg width="15" height="15" fill="none" viewBox="0 0 15 15"><path d="M2 7.5h11M9 3.5l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Optional: Observations relevant to regulatory use of data
+      <span class="opt-chevron">▼</span>
+    </div>
+    <div class="optional-content" id="opt-content">
+      <div class="field-group span2" style="grid-column:span 2">
+        <label for="opt-purpose">What is the purpose of this quality evaluation?</label>
+        <input type="text" id="opt-purpose" placeholder="e.g. data documentation for use under REACH, CLP, plant protection regulations…">
+      </div>
+      <div class="field-group">
+        <label for="opt-guideline">Study conducted according to OECD or EU guidelines?</label>
+        <select id="opt-guideline"><option value="">—</option><option>Yes</option><option>No</option><option>N/A</option></select>
+      </div>
+      <div class="field-group">
+        <label for="opt-guideline-exists">If not a guideline study: Does a guideline exist?</label>
+        <select id="opt-guideline-exists"><option value="">—</option><option>Yes</option><option>No</option><option>N/A</option></select>
+      </div>
+      <div class="field-group" style="grid-column:span 2">
+        <label for="opt-deviations">Relevant deviations from guideline(s) observed?</label>
+        <textarea id="opt-deviations" rows="2" placeholder="Describe any relevant deviations…"></textarea>
+      </div>
+      <div class="field-group" style="grid-column:span 2">
+        <label for="opt-reg-obs">Observations with importance to the regulatory use of the data</label>
+        <textarea id="opt-reg-obs" rows="2" placeholder="e.g. route of administration different from regulatory requirement…"></textarea>
+      </div>
+      <div class="field-group" style="grid-column:span 2">
+        <label for="opt-comments">General comments on usability of the data</label>
+        <textarea id="opt-comments" rows="2" placeholder="Any other observations…"></textarea>
+      </div>
+    </div>`;
+
+  // Restore deviation state
+  if (savedC && parseInt(savedC) !== resultB) {
+    document.getElementById('deviation-block').classList.add('visible');
+  }
+}
+
+function onCatCChange(val) {
+  evalCategoryC = val ? parseInt(val) : null;
+  const { resultB } = calcScores();
+  const devBlock = document.getElementById('deviation-block');
+  if (val && parseInt(val) !== resultB) devBlock.classList.add('visible');
+  else devBlock.classList.remove('visible');
+}
+
+function toggleOptional(toggle) {
+  toggle.classList.toggle('open');
+  document.getElementById('opt-content').classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════════════
+// SAVE / LOAD
+// ═══════════════════════════════════════════════════════
+function getInfo() {
+  return {
+    authors: document.getElementById('f-authors')?.value || '',
+    title: document.getElementById('f-title')?.value || '',
+    source: document.getElementById('f-source')?.value || '',
+    'eval-name': document.getElementById('f-eval-name')?.value || '',
+    'eval-date': document.getElementById('f-eval-date')?.value || '',
+    'eval-affiliation': document.getElementById('f-eval-affiliation')?.value || '',
+  };
+}
+
+function saveProgress() {
+  const data = { scores, comments, info: getInfo(), savedAt: new Date().toISOString() };
+  localStorage.setItem('toxrtool_' + studyType, JSON.stringify(data));
+  const btn = document.getElementById('save-btn');
+  btn.classList.add('saved');
+  btn.innerHTML = `<svg width="13" height="13" fill="none" viewBox="0 0 13 13"><path d="M2 7l3 3 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> Saved`;
+  setTimeout(() => {
+    btn.classList.remove('saved');
+    btn.innerHTML = `<svg width="13" height="13" fill="none" viewBox="0 0 13 13"><path d="M2 2h7l2 2v7a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/><path d="M4 2v3h5V2M4 9h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg> Save`;
+  }, 2500);
+}
+
+// ═══════════════════════════════════════════════════════
+// SHAREABLE LINK
+// ═══════════════════════════════════════════════════════
+function copyShareLink() {
+  const state = {
+    studyType,
+    scores,
+    comments,
+    info: getInfo(),
+    evalCategoryC,
+    evalJustification
+  };
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+  const url = location.origin + location.pathname + '#v1_' + encoded;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('copy-link-btn');
+    const original = btn.innerHTML;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.innerHTML = original, 2000);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// EXCEL EXPORT
+// ═══════════════════════════════════════════════════════
+function exportExcel() {
+  const info = getInfo();
+  const { total, max, resultA, resultB, allRedMet } = calcScores();
+  const groups = CRITERIA[studyType];
+  const allItems = groups.flatMap(g => g.items);
+  const catC = evalCategoryC || resultB;
+  const justif = evalJustification || '';
+  const typeName = studyType === 'in_vivo' ? 'in_vivo' : 'in_vitro';
+  const typeLabel = studyType === 'in_vivo' ? 'In Vivo' : 'In Vitro';
+
+  const wb = XLSX.utils.book_new();
+
+  // ── Sheet: Rater
+  const raterData = [
+    ['ToxRTool: a tool to assess the reliability of toxicological data'],
+    [],
+    ['Optional information for feedback to ECVAM'],
+    ['Date/period of evaluation:', info['eval-date'] || ''],
+    [],
+    ['Rater information'],
+    ['Name', info['eval-name'] || ''],
+    ['Affiliation', info['eval-affiliation'] || ''],
+  ];
+  const wsRater = XLSX.utils.aoa_to_sheet(raterData);
+  wsRater['!cols'] = [{wch:40},{wch:40}];
+  XLSX.utils.book_append_sheet(wb, wsRater, 'Rater');
+
+  // ── Sheet: Explanations
+  const explData = [
+    ['Explanations to ToxRTool'],
+    [],
+    ['Objective: ToxRTool is designed to assess the inherent quality and reliability of toxicological studies.'],
+    ['Criteria are grouped into five sections: I. Test substance identification, II. Test system characterisation,'],
+    ['III. Study design description, IV. Study results documentation, V. Plausibility of study design and results.'],
+    [],
+    ['Per criterion either 1 or 0 points can be assigned.'],
+    [`In total ${max} points for ${typeLabel} studies.`],
+    ['Criteria written in RED have special importance: if these are not met (scored 0), the maximum category is 3.'],
+    [],
+    ['Reliability categories:'],
+    ['Category', 'Score range', 'Label', 'Consequence'],
+    studyType === 'in_vivo'
+      ? ['1', '18-21 + all red met', 'Reliable without restrictions', 'Useful; check relevance']
+      : ['1', '15-18 + all red met', 'Reliable without restrictions', 'Useful; check relevance'],
+    studyType === 'in_vivo'
+      ? ['2', '13-17 + all red met', 'Reliable with restrictions', 'Potentially useful; check relevance']
+      : ['2', '11-14 + all red met', 'Reliable with restrictions', 'Potentially useful; check relevance'],
+    ['3', `<${studyType === 'in_vivo' ? 13 : 11} or not all red criteria met`, 'Not reliable', 'Generally not to be used as key study'],
+    ['4', 'Not assignable', 'Documentation insufficient', 'Generally not to be used as key study'],
+  ];
+  const wsExpl = XLSX.utils.aoa_to_sheet(explData);
+  wsExpl['!cols'] = [{wch:12},{wch:30},{wch:35},{wch:45}];
+  XLSX.utils.book_append_sheet(wb, wsExpl, 'Explanations');
+
+  // ── Sheet: assessment
+  const rows = [
+    [`Reliability assessment of ${typeLabel.toLowerCase()} toxicity studies`],
+    [],
+    ['Study under evaluation'],
+    ['Authors:', info.authors || ''],
+    [],
+    ['Title:', info.title || ''],
+    [],
+    ['Testing facility / year / sponsor / study no. or bibliographic reference:'],
+    [info.source || ''],
+    [],
+    ['No.', 'Criterion', 'Score', "Evaluator's notes"],
+    [],
+  ];
+
+  for (const g of groups) {
+    rows.push(['', `Criteria Group ${g.group}: ${g.groupName}`, '', '']);
+    for (const item of g.items) {
+      const score = scores[item.n] !== undefined ? scores[item.n] : '';
+      const note = comments[item.n] || '';
+      const prefix = item.mandatory ? '● ' : '  ';
+      rows.push([item.n, prefix + item.text, score, note]);
+    }
+    const groupTotal = g.items.reduce((s, i) => s + (scores[i.n] || 0), 0);
+    rows.push(['', `Group ${g.group} subtotal`, groupTotal, '']);
+    rows.push([]);
+  }
+
+  rows.push([]);
+  rows.push(['', `WARNING: unanswered criteria count as 0.`]);
+  rows.push([]);
+  rows.push(['', 'TOTAL SCORE:', total]);
+  rows.push([]);
+  rows.push(['A', 'Numerical result leads to initial Category:', resultA]);
+  rows.push(['B', 'Checking red scores leads to revised Category:', resultB]);
+  rows.push(['C', "Evaluator's proposal: Category:", catC]);
+  rows.push(['D', 'Justification in case evaluator deviates from B:', justif]);
+  rows.push([]);
+
+  // Optional section
+  if (currentStep === 3) {
+    const optPurpose   = document.getElementById('opt-purpose')?.value || '';
+    const optGuideline = document.getElementById('opt-guideline')?.value || '';
+    const optGExists   = document.getElementById('opt-guideline-exists')?.value || '';
+    const optDevs      = document.getElementById('opt-deviations')?.value || '';
+    const optRegObs    = document.getElementById('opt-reg-obs')?.value || '';
+    const optComments  = document.getElementById('opt-comments')?.value || '';
+    if (optPurpose || optGuideline || optGExists || optDevs || optRegObs || optComments) {
+      rows.push(['Optional documentation of observations relevant to regulatory use of data']);
+      rows.push(['Purpose of evaluation:', optPurpose]);
+      rows.push(['Conducted according to OECD/EU guidelines?', optGuideline]);
+      rows.push(['Guideline exists (if not a guideline study)?', optGExists]);
+      rows.push(['Relevant deviations from guideline(s):', optDevs]);
+      rows.push(['Observations relevant to regulatory use:', optRegObs]);
+      rows.push(['General comments on usability:', optComments]);
+    }
+  }
+
+  const wsAssess = XLSX.utils.aoa_to_sheet(rows);
+  wsAssess['!cols'] = [{wch:6},{wch:60},{wch:8},{wch:40}];
+  XLSX.utils.book_append_sheet(wb, wsAssess, typeName);
+
+  const date = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `ToxRTool_${typeName}_${date}.xlsx`);
+}
+
+// ═══════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

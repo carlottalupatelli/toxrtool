@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToxRTool — Toxicological Data Reliability Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #f7f8f5;
+    --bg-card:     #ffffff;
+    --bg-subtle:   #f0f4ee;
+    --border:      #e2e8df;
+    --border-strong: #c8d4c4;
+    --text:        #1a2118;
+    --text-2:      #4a5a47;
+    --text-3:      #7a8c77;
+    --green:       #2d7a45;
+    --green-light: #3a9657;
+    --green-bg:    #edf5ea;
+    --green-glow:  rgba(45,122,69,0.12);
+    --red:         #c0392b;
+    --red-bg:      #fdf0ef;
+    --yellow:      #b07a1a;
+    --yellow-bg:   #fdf6e8;
+    --mono:        'DM Mono', monospace;
+    --sans:        'DM Sans', sans-serif;
+    --radius:      10px;
+    --radius-lg:   16px;
+    --shadow-sm:   0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow:      0 4px 16px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+    --shadow-lg:   0 12px 40px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.05);
+    --transition:  200ms ease;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; font-size: 16px; }
+
+  a { color: var(--green); text-decoration: none; }
+  a:hover { color: var(--green-light); }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(247,248,245,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 max(24px, calc((100vw - 1100px)/2));
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 600; font-size: 0.95rem; color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .nav-badge {
+    background: var(--green-bg); color: var(--green);
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.04em;
+    padding: 2px 8px; border-radius: 20px; border: 1px solid rgba(45,122,69,0.2);
+    font-family: var(--mono);
+  }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--text-2); font-size: 0.875rem; font-weight: 450; transition: color var(--transition); }
+  .nav-links a:hover { color: var(--green); }
+  .nav-cta {
+    background: var(--green); color: #fff;
+    padding: 7px 18px; border-radius: var(--radius); font-size: 0.875rem; font-weight: 500;
+    transition: background var(--transition), transform var(--transition);
+  }
+  .nav-cta:hover { background: var(--green-light); color: #fff; transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px max(24px, calc((100vw - 1100px)/2)) 64px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green-bg); border: 1px solid rgba(45,122,69,0.2);
+    color: var(--green); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 5px 12px; border-radius: 20px;
+    margin-bottom: 20px; font-family: var(--mono);
+  }
+  .hero-eyebrow::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  h1 {
+    font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 600; line-height: 1.15;
+    letter-spacing: -0.03em; color: var(--text); margin-bottom: 20px;
+  }
+  h1 em { font-style: normal; color: var(--green); }
+  .hero-desc {
+    font-size: 1.05rem; color: var(--text-2); line-height: 1.7; margin-bottom: 36px;
+    font-weight: 350;
+  }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green); color: #fff; padding: 12px 24px;
+    border-radius: var(--radius); font-weight: 500; font-size: 0.95rem;
+    transition: all var(--transition); box-shadow: 0 4px 14px var(--green-glow);
+  }
+  .btn-primary:hover { background: var(--green-light); color: #fff; transform: translateY(-2px); box-shadow: 0 8px 24px var(--green-glow); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: var(--text-2); padding: 12px 24px;
+    border-radius: var(--radius); font-weight: 450; font-size: 0.95rem;
+    border: 1.5px solid var(--border-strong); transition: all var(--transition);
+  }
+  .btn-secondary:hover { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+  .hero-meta { margin-top: 32px; display: flex; gap: 32px; }
+  .hero-stat { }
+  .hero-stat-num { font-family: var(--mono); font-size: 1.4rem; font-weight: 500; color: var(--green); }
+  .hero-stat-label { font-size: 0.78rem; color: var(--text-3); margin-top: 2px; }
+
+  /* hero visual */
+  .hero-visual {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 24px; overflow: hidden;
+    position: relative;
+  }
+  .hero-visual::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, var(--green-bg) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .vis-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .vis-title { font-size: 0.8rem; font-weight: 600; color: var(--text-3); letter-spacing: 0.04em; text-transform: uppercase; font-family: var(--mono); }
+  .vis-badge { background: var(--green-bg); color: var(--green); font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(45,122,69,0.2); font-family: var(--mono); }
+  .vis-criteria { display: flex; flex-direction: column; gap: 8px; }
+  .vis-row {
+    display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+    border-radius: 8px; background: var(--bg-subtle);
+    font-size: 0.8rem; color: var(--text-2);
+    animation: slideIn 0.4s ease both;
+  }
+  .vis-row:nth-child(1){animation-delay:0.1s}
+  .vis-row:nth-child(2){animation-delay:0.2s}
+  .vis-row:nth-child(3){animation-delay:0.3s}
+  .vis-row:nth-child(4){animation-delay:0.4s}
+  .vis-row:nth-child(5){animation-delay:0.5s}
+  @keyframes slideIn { from{opacity:0;transform:translateX(12px)} to{opacity:1;transform:none} }
+  .vis-num { font-family: var(--mono); font-size: 0.72rem; color: var(--text-3); min-width: 20px; }
+  .vis-dot-red { width:7px; height:7px; border-radius:50%; background:var(--red); flex-shrink:0; }
+  .vis-dot-grey { width:7px; height:7px; border-radius:50%; background:var(--border-strong); flex-shrink:0; }
+  .vis-text { flex:1; }
+  .vis-score-1 {
+    font-family:var(--mono); font-size:0.72rem; font-weight:600;
+    background:var(--green-bg); color:var(--green); padding:2px 7px; border-radius:4px;
+  }
+  .vis-score-0 {
+    font-family:var(--mono); font-size:0.72rem; font-weight:600;
+    background:#f0f0f0; color:var(--text-3); padding:2px 7px; border-radius:4px;
+  }
+  .vis-score-empty {
+    font-family:var(--mono); font-size:0.72rem;
+    background:transparent; color:var(--border-strong); padding:2px 7px; border-radius:4px; border: 1px dashed var(--border-strong);
+  }
+  .vis-result {
+    margin-top: 16px; padding: 14px; border-radius: 8px;
+    background: var(--green-bg); border: 1px solid rgba(45,122,69,0.25);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .vis-result-label { font-size: 0.78rem; color: var(--text-2); font-weight: 500; }
+  .vis-result-cat { font-family:var(--mono); font-size:0.8rem; font-weight:700; color:var(--green); }
+
+  /* ── SECTIONS ── */
+  .section { padding: 72px max(24px, calc((100vw - 1100px)/2)); }
+  .section-alt { background: var(--bg-subtle); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .section-label {
+    font-family: var(--mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--green); margin-bottom: 12px;
+  }
+  h2 {
+    font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 600; letter-spacing: -0.025em;
+    color: var(--text); margin-bottom: 16px; line-height: 1.2;
+  }
+  .section-desc { font-size: 1rem; color: var(--text-2); max-width: 560px; line-height: 1.7; font-weight: 350; }
+
+  /* How it works */
+  .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 48px; }
+  .step-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 28px;
+    box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+    transition: box-shadow var(--transition), transform var(--transition);
+  }
+  .step-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+  .step-card::after {
+    content: attr(data-step); position: absolute; right: -8px; top: -12px;
+    font-family: var(--mono); font-size: 5rem; font-weight: 700; color: var(--border);
+    line-height: 1; pointer-events: none; user-select: none;
+  }
+  .step-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--green-bg); border: 1px solid rgba(45,122,69,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; margin-bottom: 16px;
+  }
+  .step-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+  .step-card p { font-size: 0.875rem; color: var(--text-2); line-height: 1.6; font-weight: 350; }
+
+  /* CTA cards */
+  .cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 48px; }
+  .cta-card {
+    background: var(--bg-card); border: 1.5px solid var(--border);
+    border-radius: var(--radius-lg); padding: 32px;
+    box-shadow: var(--shadow-sm); text-decoration: none; color: inherit;
+    transition: all 0.25s ease; display: flex; flex-direction: column; gap: 16px;
+    position: relative; overflow: hidden;
+  }
+  .cta-card:hover {
+    border-color: var(--green); box-shadow: var(--shadow), 0 0 0 4px var(--green-glow);
+    transform: translateY(-3px); color: inherit;
+  }
+  .cta-card-icon { font-size: 2rem; }
+  .cta-card h3 { font-size: 1.2rem; font-weight: 600; letter-spacing: -0.02em; }
+  .cta-card p { font-size: 0.875rem; color: var(--text-2); line-height: 1.6; font-weight: 350; flex: 1; }
+  .cta-card-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    font-family: var(--mono); font-size: 0.72rem; font-weight: 500;
+    padding: 3px 9px; border-radius: 6px;
+    background: var(--bg-subtle); color: var(--text-3); border: 1px solid var(--border);
+  }
+  .tag-red { background: var(--red-bg); color: var(--red); border-color: rgba(192,57,43,0.2); }
+  .cta-arrow {
+    position: absolute; bottom: 28px; right: 28px;
+    font-size: 1.3rem; color: var(--border-strong);
+    transition: transform var(--transition), color var(--transition);
+  }
+  .cta-card:hover .cta-arrow { transform: translate(3px,-3px); color: var(--green); }
+
+  /* Scoring table */
+  .score-table { width: 100%; border-collapse: collapse; margin-top: 36px; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .score-table th {
+    background: var(--bg-card); padding: 12px 16px; text-align: left;
+    font-size: 0.78rem; font-weight: 600; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 0.05em; font-family: var(--mono);
+    border-bottom: 2px solid var(--border);
+  }
+  .score-table td {
+    padding: 12px 16px; font-size: 0.875rem; color: var(--text-2);
+    border-bottom: 1px solid var(--border); background: var(--bg-card);
+  }
+  .score-table tr:last-child td { border-bottom: none; }
+  .cat-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: 0.75rem; font-weight: 600;
+    padding: 3px 10px; border-radius: 6px;
+  }
+  .cat-1 { background: var(--green-bg); color: var(--green); border: 1px solid rgba(45,122,69,0.25); }
+  .cat-2 { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(176,122,26,0.25); }
+  .cat-3 { background: var(--red-bg); color: var(--red); border: 1px solid rgba(192,57,43,0.2); }
+  .cat-4 { background: var(--bg-subtle); color: var(--text-3); border: 1px solid var(--border); }
+
+  /* Criteria groups visual */
+  .groups-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-top: 36px; }
+  .group-pill {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px;
+    box-shadow: var(--shadow-sm);
+  }
+  .group-pill-roman { font-family: var(--mono); font-size: 0.7rem; color: var(--green); font-weight: 600; margin-bottom: 6px; }
+  .group-pill-title { font-size: 0.78rem; color: var(--text); font-weight: 500; line-height: 1.4; }
+  .group-pill-count { font-family: var(--mono); font-size: 0.68rem; color: var(--text-3); margin-top: 8px; }
+
+  /* Footer */
+  footer {
+    background: var(--bg-card); border-top: 1px solid var(--border);
+    padding: 40px max(24px, calc((100vw - 1100px)/2));
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-brand { font-weight: 600; font-size: 0.875rem; display: flex; align-items: center; gap: 8px; }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a { font-size: 0.8rem; color: var(--text-3); transition: color var(--transition); }
+  .footer-links a:hover { color: var(--green); }
+  .footer-note { font-size: 0.75rem; color: var(--text-3); max-width: 420px; line-height: 1.5; }
+
+  /* Responsive */
+  @media (max-width: 880px) {
+    .hero { grid-template-columns: 1fr; gap: 40px; }
+    .hero-visual { display: none; }
+    .steps { grid-template-columns: 1fr; }
+    .cta-grid { grid-template-columns: 1fr; }
+    .groups-grid { grid-template-columns: repeat(2,1fr); }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <rect width="22" height="22" rx="5" fill="#2d7a45"/>
+      <path d="M6 11h3l2-5 2 10 2-5h1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    ToxRTool
+  </div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#how">How it works</a>
+    <a href="#scoring">Scoring</a>
+    <a href="https://joint-research-centre.ec.europa.eu/scientific-tools-and-databases/toxrtool-toxicological-data-reliability-assessment-tool_en" target="_blank">JRC Source ↗</a>
+    <a href="assess.html?type=in_vivo" class="nav-cta">Start assessment</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <h1>Assess <em>toxicological</em> data reliability</h1>
+    <p class="hero-desc">
+      A digitised, user-friendly tool inspired by the <a href="https://joint-research-centre.ec.europa.eu/scientific-tools-and-databases/toxrtool-toxicological-data-reliability-assessment-tool_en" target="_blank" rel="noopener">EU/JRC ToxRTool</a> — the EU reference standard for evaluating the quality and reliability of <em>in vivo</em> and <em>in vitro</em> toxicity studies.
+    </p>
+    <div class="hero-actions">
+      <a href="assess.html?type=in_vivo" class="btn-primary">
+        <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Start assessment
+      </a>
+      <a href="#about" class="btn-secondary">Learn more</a>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-stat">
+        <div class="hero-stat-num">21</div>
+        <div class="hero-stat-label">In vivo criteria</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">18</div>
+        <div class="hero-stat-label">In vitro criteria</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">4</div>
+        <div class="hero-stat-label">Reliability categories</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual" aria-hidden="true">
+    <div class="vis-header">
+      <span class="vis-title">In vivo · Group III</span>
+      <span class="vis-badge">Live scoring</span>
+    </div>
+    <div class="vis-criteria">
+      <div class="vis-row">
+        <span class="vis-num">10</span>
+        <span class="vis-dot-red"></span>
+        <span class="vis-text">Administration route given?</span>
+        <span class="vis-score-1">1</span>
+      </div>
+      <div class="vis-row">
+        <span class="vis-num">11</span>
+        <span class="vis-dot-red"></span>
+        <span class="vis-text">Doses or concentrations given?</span>
+        <span class="vis-score-1">1</span>
+      </div>
+      <div class="vis-row">
+        <span class="vis-num">12</span>
+        <span class="vis-dot-red"></span>
+        <span class="vis-text">Frequency and duration stated?</span>
+        <span class="vis-score-0">0</span>
+      </div>
+      <div class="vis-row">
+        <span class="vis-num">13</span>
+        <span class="vis-dot-red"></span>
+        <span class="vis-text">Controls included?</span>
+        <span class="vis-score-1">1</span>
+      </div>
+      <div class="vis-row">
+        <span class="vis-num">14</span>
+        <span class="vis-dot-red"></span>
+        <span class="vis-text">Number of animals given?</span>
+        <span class="vis-score-empty">—</span>
+      </div>
+    </div>
+    <div class="vis-result">
+      <span class="vis-result-label">Current score: 14/21 · All mandatory?</span>
+      <span class="vis-result-cat">Checking…</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section section-alt" id="about">
+  <div class="section-label">About the tool</div>
+  <h2>What is ToxRTool?</h2>
+  <p class="section-desc">
+    ToxRTool (Toxicological data Reliability assessment Tool) was developed by the European Union Reference Laboratory for alternatives to animal testing (EURL ECVAM) at the Joint Research Centre of the European Commission. It provides a structured, transparent way to evaluate the inherent quality of toxicological studies.
+  </p>
+  <div class="groups-grid" style="margin-top: 36px;">
+    <div class="group-pill"><div class="group-pill-roman">I</div><div class="group-pill-title">Test Substance Identification</div><div class="group-pill-count">4 criteria</div></div>
+    <div class="group-pill"><div class="group-pill-roman">II</div><div class="group-pill-title">Test System Characterisation</div><div class="group-pill-count">3–5 criteria</div></div>
+    <div class="group-pill"><div class="group-pill-roman">III</div><div class="group-pill-title">Study Design Description</div><div class="group-pill-count">6–7 criteria</div></div>
+    <div class="group-pill"><div class="group-pill-roman">IV</div><div class="group-pill-title">Study Results Documentation</div><div class="group-pill-count">3 criteria</div></div>
+    <div class="group-pill"><div class="group-pill-roman">V</div><div class="group-pill-title">Plausibility of Design & Results</div><div class="group-pill-count">2 criteria</div></div>
+  </div>
+  <p style="margin-top:20px; font-size:0.83rem; color:var(--text-3);">
+    Reference: Schneider K. et al. (2009). <em>ToxRTool, a new tool to assess the reliability of toxicological data.</em> Regulatory Toxicology and Pharmacology, 54(2), 162–173.
+  </p>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-label">How it works</div>
+  <h2>Three steps to a reliability score</h2>
+  <p class="section-desc">Complete an assessment in minutes. Export results as Excel or PDF for your dossier.</p>
+  <div class="steps">
+    <div class="step-card" data-step="1">
+      <div class="step-icon">📋</div>
+      <h3>Select study type & enter info</h3>
+      <p>Choose between an <em>in vivo</em> or <em>in vitro</em> study. Enter authors, title, facility, and your evaluator details.</p>
+    </div>
+    <div class="step-card" data-step="2">
+      <div class="step-icon">⚖️</div>
+      <h3>Score each criterion</h3>
+      <p>Work through all criteria grouped into five logical sections. Toggle <strong>0</strong> or <strong>1</strong> per criterion. Mandatory criteria (shown in red) must be met for Categories 1 or 2.</p>
+    </div>
+    <div class="step-card" data-step="3">
+      <div class="step-icon">📤</div>
+      <h3>Review & export</h3>
+      <p>The tool calculates Categories A and B automatically. Confirm your final proposal (C) and export as a fully populated Excel file or print-ready report.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SCORING -->
+<section class="section section-alt" id="scoring">
+  <div class="section-label">Scoring system</div>
+  <h2>Reliability categories</h2>
+  <p class="section-desc">Derived from the Klimisch et al. classification, adapted by EURL ECVAM for systematic use.</p>
+  <table class="score-table">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Label</th>
+        <th>In vivo score</th>
+        <th>In vitro score</th>
+        <th>Typical use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="cat-badge cat-1">Cat. 1</span></td>
+        <td>Reliable without restrictions</td>
+        <td style="font-family:var(--mono);font-size:0.82rem">18–21 pts + all ● met</td>
+        <td style="font-family:var(--mono);font-size:0.82rem">15–18 pts + all ● met</td>
+        <td>Key study; check relevance</td>
+      </tr>
+      <tr>
+        <td><span class="cat-badge cat-2">Cat. 2</span></td>
+        <td>Reliable with restrictions</td>
+        <td style="font-family:var(--mono);font-size:0.82rem">13–17 pts + all ● met</td>
+        <td style="font-family:var(--mono);font-size:0.82rem">11–14 pts + all ● met</td>
+        <td>Potentially useful; check relevance</td>
+      </tr>
+      <tr>
+        <td><span class="cat-badge cat-3">Cat. 3</span></td>
+        <td>Not reliable</td>
+        <td style="font-family:var(--mono);font-size:0.82rem">&lt;13 pts or ● not met</td>
+        <td style="font-family:var(--mono);font-size:0.82rem">&lt;11 pts or ● not met</td>
+        <td>Generally not as key study</td>
+      </tr>
+      <tr>
+        <td><span class="cat-badge cat-4">Cat. 4</span></td>
+        <td>Not assignable</td>
+        <td colspan="2" style="font-size:0.82rem;color:var(--text-3)">Documentation insufficient (reviews, handbooks, etc.)</td>
+        <td>Not for key study use</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin-top:12px; font-size:0.78rem; color:var(--text-3);">
+    ● = mandatory criterion. If any mandatory criterion scores 0, maximum assignable category is 3, regardless of total score.
+  </p>
+</section>
+
+<!-- START CTA -->
+<section class="section" id="start">
+  <div class="section-label">Get started</div>
+  <h2>Choose your study type</h2>
+  <p class="section-desc">Both forms follow the same five criterion groups. Select the type that matches your study.</p>
+  <div class="cta-grid">
+    <a href="assess.html?type=in_vivo" class="cta-card">
+      <div class="cta-card-icon">🔬</div>
+      <h3>In Vivo Study</h3>
+      <p>For whole-organism toxicity studies conducted in living animals or experimental human subjects. Includes criteria specific to housing conditions, animal numbers, and administration routes.</p>
+      <div class="cta-card-meta">
+        <span class="tag">21 criteria</span>
+        <span class="tag tag-red">8 mandatory ●</span>
+        <span class="tag">Max score: 21</span>
+      </div>
+      <span class="cta-arrow">↗</span>
+    </a>
+    <a href="assess.html?type=in_vitro" class="cta-card">
+      <div class="cta-card-icon">🧫</div>
+      <h3>In Vitro Study</h3>
+      <p>For cell-based or tissue-based toxicity studies performed outside of living organisms. Includes criteria for test system characterisation, replicates, and culture conditions.</p>
+      <div class="cta-card-meta">
+        <span class="tag">18 criteria</span>
+        <span class="tag tag-red">6 mandatory ●</span>
+        <span class="tag">Max score: 18</span>
+      </div>
+      <span class="cta-arrow">↗</span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">
+    <svg width="18" height="18" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="5" fill="#2d7a45"/><path d="M6 11h3l2-5 2 10 2-5h1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    ToxRTool Web
+  </div>
+  <div class="footer-links">
+    <a href="https://joint-research-centre.ec.europa.eu/scientific-tools-and-databases/toxrtool-toxicological-data-reliability-assessment-tool_en" target="_blank">Original tool (JRC)</a>
+    <a href="https://github.com" target="_blank">GitHub</a>
+    <a href="#scoring">Scoring guide</a>
+  </div>
+  <p class="footer-note">
+    Inspired by the <a href="https://joint-research-centre.ec.europa.eu/scientific-tools-and-databases/toxrtool-toxicological-data-reliability-assessment-tool_en" target="_blank" rel="noopener">EU/JRC ToxRTool</a>, developed by EURL ECVAM at the European Commission Joint Research Centre. This is an unofficial open-source implementation — not affiliated with or endorsed by the European Commission.
+  </p>
+</footer>
+
+</body>
+</html>
