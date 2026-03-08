@@ -17,7 +17,7 @@ A modern, open-source web implementation of the **ToxRTool** — the Toxicologic
 
 ## Live Demo
 
-👉 https://carlottalupatelli.github.io/toxrtool-web/
+👉 https://carlottalupatelli.github.io/toxrtool/
 
 ## Usage
 
@@ -33,7 +33,7 @@ A modern, open-source web implementation of the **ToxRTool** — the Toxicologic
 1. Fork / clone this repo
 2. Push to `main`
 3. Go to **Settings → Pages → Source: main / root**
-4. Site is live at `https://carlottalupatelli.github.io/toxrtool-web/`
+4. Site is live at `https://carlottalupatelli.github.io/toxrtool/`
 
 ## Attribution
 
