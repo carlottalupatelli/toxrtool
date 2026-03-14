@@ -430,6 +430,84 @@
     .groups-grid { grid-template-columns: repeat(2,1fr); }
     .nav-links { display: none; }
   }
+
+  /* ── DESIGN ENHANCEMENTS ── */
+
+  /* H1 em — gradient text using existing green shades */
+  h1 em {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Hero stat numbers — larger, bolder */
+  .hero-stat-num { font-size: 2rem; font-weight: 700; line-height: 1; }
+
+  /* Hero visual — radial green glow */
+  .hero-visual {
+    background: radial-gradient(ellipse at 80% 15%, rgba(45,122,69,0.07) 0%, transparent 55%), var(--bg-card);
+  }
+
+  /* Primary button — gradient + letter-spacing + inset active state */
+  .btn-primary {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+    letter-spacing: 0.02em;
+  }
+  .btn-primary:hover { background: linear-gradient(135deg, #318a4e 0%, #44ab66 100%); }
+  .btn-primary:active { box-shadow: inset 0 2px 6px rgba(0,0,0,0.2); transform: translateY(0); }
+  .btn-secondary { letter-spacing: 0.02em; }
+
+  /* Nav brand — logo glow ring on hover */
+  .nav-brand svg { transition: filter var(--transition); }
+  .nav-brand:hover svg { filter: drop-shadow(0 0 8px rgba(45,122,69,0.5)); }
+
+  /* Nav links — animated green underline */
+  .nav-links a:not(.nav-cta) { position: relative; padding-bottom: 2px; }
+  .nav-links a:not(.nav-cta)::after {
+    content: ''; position: absolute; bottom: -2px; left: 0;
+    width: 0; height: 2px;
+    background: linear-gradient(90deg, var(--green), var(--green-light));
+    border-radius: 1px; transition: width var(--transition);
+  }
+  .nav-links a:not(.nav-cta):hover::after { width: 100%; }
+
+  /* Nav CTA — fix color specificity so white text wins over .nav-links a */
+  .nav-links .nav-cta { color: #fff; }
+  .nav-links .nav-cta:hover { color: #fff; }
+
+  /* Section labels — left green accent bar + wider spacing */
+  .section-label { display: flex; align-items: center; gap: 8px; letter-spacing: 0.12em; }
+  .section-label::before {
+    content: ''; display: inline-block; width: 3px; height: 0.85em;
+    background: var(--green); border-radius: 2px; flex-shrink: 0;
+  }
+
+  /* Step cards — richer multi-layer shadow, gradient watermark */
+  .step-card { box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 14px rgba(0,0,0,0.06); }
+  .step-card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.1); }
+  .step-card::after {
+    background: linear-gradient(135deg, var(--border) 0%, transparent 55%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* CTA cards — gradient top border + enhanced hover */
+  .cta-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--green) 0%, var(--green-light) 100%);
+  }
+  .cta-card { box-shadow: 0 2px 8px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.04); }
+  .cta-card:hover {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fcf7 100%);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.09), 0 0 0 4px var(--green-glow);
+  }
+
+  /* Footer — gradient top border + more vertical padding */
+  footer { position: relative; border-top: none; padding-top: 48px; padding-bottom: 48px; }
+  footer::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--green) 0%, var(--green-light) 40%, transparent 100%);
+  }
 </style>
 </head>
 <body>
