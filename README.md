@@ -1,47 +1,68 @@
 # ToxRTool Web
 
-A modern, open-source web implementation of the **ToxRTool** — the Toxicological Data Reliability Assessment Tool developed by EURL ECVAM at the European Commission Joint Research Centre.
+A modern, browser-based implementation of the **EU/JRC ToxRTool** — the standardised checklist for evaluating the reliability of toxicological studies.
+
+<img src="docs/screenshot.png" alt="ToxRTool Web screenshot" width="100%">
+
+**Live site:** https://carlottalupatelli.github.io/toxrtool/
+**Source:** https://github.com/carlottalupatelli/toxrtool
+
+---
+
+## What it does
+
+ToxRTool guides evaluators through a structured set of criteria to assign a **Klimisch reliability category (1–4)** to any toxicological study. Supports both study types:
+
+| Study type | Criteria | Mandatory |
+|------------|----------|-----------|
+| In vivo    | 21       | 8         |
+| In vitro   | 18       | 6         |
+
+### Reliability categories
+
+| Category | Meaning | Condition |
+|----------|---------|-----------|
+| **1** | Reliable without restrictions | High score + all mandatory met |
+| **2** | Reliable with restrictions | Mid score + all mandatory met |
+| **3** | Not reliable | Low score or mandatory criterion failed |
+| **4** | Not assignable | Insufficient documentation |
+
+---
 
 ## Features
 
-- ✅ Full **in vivo** assessment (21 criteria, 8 mandatory)
-- ✅ Full **in vitro** assessment (18 criteria, 6 mandatory)
-- ✅ Automatic scoring → Categories A and B
-- ✅ Evaluator override (Category C) with justification (D)
-- ✅ Optional regulatory relevance section
-- ✅ **Export to Excel (.xlsx)** — faithful multi-sheet format
-- ✅ **Print / Save as PDF** via browser
-- ✅ Auto-save to browser localStorage
-- ✅ **Shareable links** — encode full assessment state in URL hash
-- ✅ Zero backend — runs entirely in the browser
+- Automatic scoring → Categories A (raw) and B (mandatory-adjusted)
+- Evaluator override (Category C) with justification field (D)
+- Optional regulatory relevance section
+- Export to **Excel (.xlsx)** — multi-sheet, faithful to the original format
+- **Print / Save as PDF** via browser
+- Auto-save to `localStorage` — nothing is lost on refresh
+- Shareable links — full assessment state encoded in the URL hash
+- Zero backend — runs entirely in the browser, no installation needed
 
-## Live Demo
+---
 
-👉 https://carlottalupatelli.github.io/toxrtool/
+## Run locally
 
-## Usage
+No build step required:
 
-1. Open `index.html` and select study type (In Vivo / In Vitro)
-2. Fill in study and evaluator information
-3. Score all criteria (0 = not met, 1 = met)
-4. Review auto-calculated categories A and B
-5. Enter your proposal (C) and justification if deviating
-6. Download Excel or print
+```bash
+python -m http.server 8000
+# then open http://localhost:8000
+```
 
-## Deployment to GitHub Pages
-
-1. Fork / clone this repo
-2. Push to `main`
-3. Go to **Settings → Pages → Source: main / root**
-4. Site is live at `https://carlottalupatelli.github.io/toxrtool/`
+---
 
 ## Attribution
 
-**Methodology:** Schneider K. et al. (2009). *ToxRTool, a new tool to assess the reliability of toxicological data.* Regulatory Toxicology and Pharmacology, 54(2), 162–173.
+This web implementation has been **approved by the original authors and the JRC**.
+
+**Original publication:**
+Schneider K, Schwarz M, Burkholder I, Kopp-Schneider A, Edler L, Kinsner-Ovaskainen A, Hartung T, Hoffmann S (2009). *ToxRTool, a new tool to assess the reliability of toxicological data.* Regulatory Toxicology and Pharmacology, 54(2), 162–173. [doi:10.1016/j.yrtph.2009.06.006](https://doi.org/10.1016/j.yrtph.2009.06.006)
 
 **Original tool:** [EURL ECVAM / JRC](https://joint-research-centre.ec.europa.eu/scientific-tools-and-databases/toxrtool-toxicological-data-reliability-assessment-tool_en)
 
-This web implementation is an unofficial open-source tool. Not affiliated with or endorsed by the European Commission.
+---
 
 ## License
 
