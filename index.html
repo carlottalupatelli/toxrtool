@@ -508,9 +508,30 @@
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, var(--green) 0%, var(--green-light) 40%, transparent 100%);
   }
+
+  /* Coming-soon banner */
+  .soon-banner {
+    display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+    background: var(--text); color: #fff; text-align: center;
+    padding: 9px 24px; font-size: 0.85rem; line-height: 1.4;
+  }
+  .soon-banner:hover { color: #fff; }
+  .soon-banner:hover .soon-link { text-decoration: underline; }
+  .soon-tag {
+    font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; background: var(--green-light); color: #fff;
+    padding: 2px 8px; border-radius: 20px;
+  }
+  .soon-link { color: #b9e0c3; font-weight: 500; white-space: nowrap; }
 </style>
 </head>
 <body>
+
+<a href="ai.html" class="soon-banner">
+  <span class="soon-tag">Coming soon</span>
+  <span>AI-assisted draft assessments — upload a study PDF, review a cited draft for every criterion.</span>
+  <span class="soon-link">See the preview →</span>
+</a>
 
 <nav>
   <div class="nav-brand">
@@ -525,6 +546,7 @@
     <a href="#how">How it works</a>
     <a href="#scoring">Scoring</a>
     <a href="#faq">FAQ</a>
+    <a href="ai.html">AI preview</a>
     <a href="https://joint-research-centre.ec.europa.eu/scientific-tools-and-databases/toxrtool-toxicological-data-reliability-assessment-tool_en" target="_blank">JRC Source ↗</a>
     <a href="assess.html?type=in_vivo" class="nav-cta">Start assessment</a>
   </div>
@@ -770,6 +792,7 @@
     <a href="https://joint-research-centre.ec.europa.eu/scientific-tools-and-databases/toxrtool-toxicological-data-reliability-assessment-tool_en" target="_blank">Original tool (JRC)</a>
     <a href="https://github.com/carlottalupatelli/toxrtool" target="_blank">GitHub</a>
     <a href="#scoring">Scoring guide</a>
+    <a href="ai.html">AI preview</a>
   </div>
   <p class="footer-note">
     Based on the <a href="https://joint-research-centre.ec.europa.eu/scientific-tools-and-databases/toxrtool-toxicological-data-reliability-assessment-tool_en" target="_blank" rel="noopener">EU/JRC ToxRTool</a>, developed by EURL ECVAM at the European Commission Joint Research Centre. This open-source web implementation has been approved by the original authors and the JRC.
