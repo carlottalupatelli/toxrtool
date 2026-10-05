@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /assess.html
 
-Sitemap: https://carlottalupatelli.github.io/toxrtool/sitemap.xml
+Sitemap: https://toxagent.com/sitemap.xml

@@ -4,7 +4,7 @@ A modern, browser-based implementation of the **EU/JRC ToxRTool** — the standa
 
 <img src="docs/screenshot.png" alt="ToxRTool Web screenshot" width="100%">
 
-**Live site:** https://carlottalupatelli.github.io/toxrtool/
+**Live site:** https://toxagent.com/
 **Source:** https://github.com/carlottalupatelli/toxrtool
 
 ---
