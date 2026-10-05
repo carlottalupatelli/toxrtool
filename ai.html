@@ -108,6 +108,14 @@
     background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px;
   }
 
+  /* ── WAITLIST ── */
+  .waitlist {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap;
+    margin-bottom: 20px; padding: 16px 20px;
+    background: var(--green-bg); border: 1px solid rgba(45,122,69,0.2); border-radius: var(--radius-lg);
+  }
+  .waitlist p { color: var(--text-2); font-size: 0.95rem; }
+
   /* ── VIDEO ── */
   .video-frame {
     background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg);
@@ -230,6 +238,13 @@
   </header>
 
   <section class="wrap" aria-label="Feature preview video">
+    <div class="waitlist">
+      <p>Want early access? Join the waiting list and we'll let you know when it's ready.</p>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdIZg0Jyr3UvA_8W29eUNJiqfh7HOGsCmNyX-pcBkGtnnX19g/viewform" target="_blank" rel="noopener" class="btn-primary">
+        Join waiting list
+        <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
     <div class="video-frame">
       <video controls muted playsinline preload="metadata" poster="docs/ai-preview-poster.jpg">
         <source src="docs/ai-preview.mp4" type="video/mp4">
