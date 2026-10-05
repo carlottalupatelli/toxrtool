@@ -78,7 +78,10 @@
 
   /* ── HERO ── */
   .wrap { padding: 0 max(16px, calc((100vw - 1100px)/2)); }
-  .hero { padding-top: 72px; padding-bottom: 40px; max-width: 760px; }
+  .hero {
+    padding-top: 64px; padding-bottom: 48px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px 64px; align-items: end;
+  }
   .eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
     background: var(--green-bg); border: 1px solid rgba(45,122,69,0.2);
@@ -90,8 +93,8 @@
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
   @media (prefers-reduced-motion: reduce) { .eyebrow::before { animation: none; } }
   h1 {
-    font-size: clamp(2rem, 4vw, 3rem); font-weight: 600; line-height: 1.15;
-    letter-spacing: -0.03em; margin-bottom: 20px;
+    font-size: clamp(2rem, 4.4vw, 3.4rem); font-weight: 600; line-height: 1.1;
+    letter-spacing: -0.03em;
   }
   h1 em {
     font-style: normal;
@@ -99,6 +102,11 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
   .lede { font-size: 1.1rem; color: var(--text-2); line-height: 1.7; font-weight: 350; }
+  .facts { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; list-style: none; }
+  .facts li {
+    font-family: var(--mono); font-size: 0.75rem; color: var(--text-2);
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px;
+  }
 
   /* ── VIDEO ── */
   .video-frame {
@@ -180,7 +188,7 @@
     .steps { grid-template-columns: 1fr; }
     .principles { grid-template-columns: 1fr; }
     .nav-links a:not(.nav-cta) { display: none; }
-    .hero { padding-top: 48px; }
+    .hero { grid-template-columns: 1fr; padding-top: 48px; align-items: start; }
     .section { padding-top: 56px; padding-bottom: 56px; }
   }
 </style>
@@ -204,12 +212,21 @@
 
 <main>
   <header class="wrap hero">
-    <div class="eyebrow">Coming soon</div>
-    <h1>AI-assisted <em>draft assessments</em></h1>
-    <p class="lede">
-      Upload the study PDF and get a draft score, a short reasoning and a page-cited quote for every ToxRTool criterion.
-      You check each answer against the paper, side by side, and decide what goes into your assessment.
-    </p>
+    <div>
+      <div class="eyebrow">Coming soon</div>
+      <h1>AI-assisted <em>draft assessments</em></h1>
+    </div>
+    <div>
+      <p class="lede">
+        Upload the study PDF and get a draft score, a short reasoning and a page-cited quote for every ToxRTool criterion.
+        You check each answer against the paper, side by side, and decide what goes into your assessment.
+      </p>
+      <ul class="facts">
+        <li>In vivo &amp; in vitro</li>
+        <li>Page-cited evidence</li>
+        <li>Bring your own key</li>
+      </ul>
+    </div>
   </header>
 
   <section class="wrap" aria-label="Feature preview video">
